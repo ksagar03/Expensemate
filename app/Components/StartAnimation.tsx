@@ -17,7 +17,7 @@ const Logo = () => {
 
   
     <video width={800} autoPlay muted onEnded={handleVideoEnd} >
-      <source src="/logoVideo/video.webm" type="video/webm" />
+      <source src="/Video/video.webm" type="video/webm" />
     </video>
     </div>
   );
