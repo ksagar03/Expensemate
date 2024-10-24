@@ -1,17 +1,17 @@
 "use client";
 import React, { useEffect } from "react";
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { easeIn, motion } from "framer-motion";
 import Google_Svg from "../../public/SVGs/Google_Svg";
 import CloseIcon from "@mui/icons-material/Close";
-import { IconButton } from "@mui/material";
 
-const Login_Signup = ({ userAction = "" }) => {
+const Login_Signup = ({ userAction = "", toshow = true }) => {
   const [userSelection, setUserSelection] = useState("");
-  const [close, SetClose] = useState(true);
+  const [close, setClose] = useState(toshow);
+
   useEffect(() => {
     setUserSelection(userAction);
-    SetClose(true);
+    setClose(toshow);
   }, [userAction]);
 
   // const [isLogin, setIsLogin] = useState(userSelection)
@@ -38,31 +38,34 @@ const Login_Signup = ({ userAction = "" }) => {
 
   return (
     <>
-      {close ? (
-        <div className="min-h-screen bg-gray-200 flex flex-col py-6 justify-center sm:py-12 ">
+      {!close ? (
+        <div className="fixed inset-0 bg-gray-900 bg-opacity-80 flex items-center py-6 justify-center sm:py-12 z-10">
           <div className=" relative py-3 md:max-w-2xl mx-auto">
             <span className=" absolute inset-0 bg-gradient-to-r from-[#662D8C] to-[#ED1E79] shadow-lg transform -skew-y-0 -rotate-6 rounded-3xl"></span>
             <div className="relative px-4 py-10 bg-white shadow-lg rounded-3xl md:p-10 3xl:p-20">
-              <IconButton
-                className="absolute -mt-14 md:-mt-7 md:right-4 right-6 text-red-700 font-semibold"
-                size="large"
+              <button
+                className="absolute -mt-14 md:-mt-7 md:right-4 right-6 text-red-700 font-semibold hover:bg-gray-200 rounded-full p-3"
                 onClick={() => {
-                  SetClose(!close);
+                  setClose(!close);
                   setUserSelection("");
                 }}
               >
                 <CloseIcon fontSize="large" />
-              </IconButton>
+              </button>
               <div className="mx-auto max-w-md">
-                <div>
+                <motion.div initial={{ y: 10 }} animate={{ y: 0 }}>
                   <h1 className=" text-2xl font-semibold">
                     {userSelection === "Login" ? "Login" : "Signup"}
                   </h1>
-                </div>
+                </motion.div>
                 <div className="divide-y divide-gray-300">
                   <div className="py-8 text-base leading-6 space-y-4 text-grey-700 sm:text-lg sm:leading-7">
                     {userSelection === "Signup" ? (
-                      <div className="relative">
+                      <motion.div
+                        className="relative"
+                        initial={{ opacity: 0, scale: 0 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                      >
                         <input
                           autoComplete="off"
                           id="name"
@@ -77,11 +80,15 @@ const Login_Signup = ({ userAction = "" }) => {
                         >
                           Your Name
                         </label>
-                      </div>
+                      </motion.div>
                     ) : (
                       ""
                     )}
-                    <div className="relative">
+                    <motion.div
+                      className="relative"
+                      initial={{ opacity: 0, scale: 0 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                    >
                       <input
                         autoComplete="off"
                         id="email"
@@ -96,8 +103,12 @@ const Login_Signup = ({ userAction = "" }) => {
                       >
                         Email Address
                       </label>
-                    </div>
-                    <div className="relative">
+                    </motion.div>
+                    <motion.div
+                      className="relative"
+                      initial={{ opacity: 0, scale: 0 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                    >
                       <input
                         autoComplete="off"
                         id="password"
@@ -112,7 +123,7 @@ const Login_Signup = ({ userAction = "" }) => {
                       >
                         Password
                       </label>
-                    </div>
+                    </motion.div>
                     <div className="relative  ">
                       <button className="bg-gradient-to-r from-[#4E65FF] to-[#A890FE] text-light font-semibold rounded-md px-3 py-2 hover:from-[#474955] hover:to-[#bebacf] ">
                         Submit
