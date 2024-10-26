@@ -4,7 +4,7 @@ import { useState } from "react";
 import { easeIn, motion } from "framer-motion";
 import Google_Svg from "../../public/SVGs/Google_Svg";
 import CloseIcon from "@mui/icons-material/Close";
-
+import InputTag from "./InputTag";
 const Login_Signup = ({ userAction = "", toshow = true }) => {
   const [userSelection, setUserSelection] = useState("");
   const [close, setClose] = useState(toshow);
@@ -61,69 +61,36 @@ const Login_Signup = ({ userAction = "", toshow = true }) => {
                 <div className="divide-y divide-gray-300">
                   <div className="py-8 text-base leading-6 space-y-4 text-grey-700 sm:text-lg sm:leading-7">
                     {userSelection === "Signup" ? (
-                      <motion.div
-                        className="relative"
-                        initial={{ opacity: 0, scale: 0 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                      >
-                        <input
-                          autoComplete="off"
-                          id="name"
-                          name="name"
-                          type="text"
-                          className="peer placeholder-transparent h-10 w-full border-b-2 border-gray-300 text-gray-900 focus:outline-none focus:border-rose-600"
-                          placeholder="Name"
-                        />
-                        <label
-                          htmlFor="name"
-                          className="absolute left-0 -top-3.5 text-gray-600 text-sm peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-2 transition-all peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm"
-                        >
-                          Your Name
-                        </label>
-                      </motion.div>
+                      <InputTag
+                        id="name"
+                        name="name"
+                        type="text"
+                        placeholder="Name"
+                        html_for="name"
+                        label_name="Your Name"
+                      />
                     ) : (
                       ""
                     )}
-                    <motion.div
-                      className="relative"
-                      initial={{ opacity: 0, scale: 0 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                    >
-                      <input
-                        autoComplete="off"
-                        id="email"
-                        name="email"
-                        type="text"
-                        className="peer placeholder-transparent h-10 w-full border-b-2 border-gray-300 text-gray-900 focus:outline-none focus:border-rose-600"
-                        placeholder="Email address"
-                      />
-                      <label
-                        htmlFor="email"
-                        className="absolute left-0 -top-3.5 text-gray-600 text-sm peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-2 transition-all peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm"
-                      >
-                        Email Address
-                      </label>
-                    </motion.div>
-                    <motion.div
-                      className="relative"
-                      initial={{ opacity: 0, scale: 0 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                    >
-                      <input
-                        autoComplete="off"
-                        id="password"
-                        name="password"
-                        type="password"
-                        className=" peer placeholder-transparent h-10 w-full border-b-2 border-gray-300 text-gray-900 focus:outline-none focus:border-rose-600"
-                        placeholder="Password"
-                      />
-                      <label
-                        htmlFor="password"
-                        className=" absolute left-0 -top-3.5 text-gray-600 text-sm peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-2 transition-all peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm"
-                      >
-                        Password
-                      </label>
-                    </motion.div>
+
+                    <InputTag
+                      id="email"
+                      name="Email Address"
+                      type="text"
+                      placeholder="Name"
+                      html_for="email"
+                      label_name="Email Address"
+                    />
+                    <InputTag
+                      id="password"
+                      name="password"
+                      type="password"
+                      placeholder="Name"
+                      html_for="password"
+                      label_name="Password"
+                      passwordHide = {true}
+                    />
+
                     <div className="relative  ">
                       <button className="bg-gradient-to-r from-[#4E65FF] to-[#A890FE] text-light font-semibold rounded-md px-3 py-2 hover:from-[#474955] hover:to-[#bebacf] ">
                         Submit
