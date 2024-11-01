@@ -9,7 +9,7 @@ const Logo = () => {
   const router = useRouter()
   const handleVideoEnd = () => {
     console.log("navigating to the Home page")
-    router?.push("/Home")
+    router?.replace("/Home")
   }
 
   return (

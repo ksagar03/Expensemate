@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import "./globals.css";
-import Footer from "./Components/Footer";
+import Footer from "../Components/Footer";
 import Head from "next/head";
 import Link from "next/link";
+import Header from "../Components/Header";
 
 export const metadata: Metadata = {
   title: "Expense Tracker",
@@ -23,7 +23,9 @@ export default function RootLayout({
       <body
       className=" bg-light"
       >
+        <Header/>
         {children}
+        <Footer/>
       </body>
     </html>
   );

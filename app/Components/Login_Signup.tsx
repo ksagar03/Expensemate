@@ -5,6 +5,11 @@ import { easeIn, motion } from "framer-motion";
 import Google_Svg from "../../public/SVGs/Google_Svg";
 import CloseIcon from "@mui/icons-material/Close";
 import InputTag from "./InputTag";
+import User from "../models/userModel";
+import { hash } from "bcryptjs";
+import dbConnect from "../lib/dbConnect";
+// import { handleSignUpSubmit } from "../lib/handleFormsubmit";
+
 const Login_Signup = ({ userAction = "", toshow = true }) => {
   const [userSelection, setUserSelection] = useState("");
   const [close, setClose] = useState(toshow);
@@ -13,29 +18,37 @@ const Login_Signup = ({ userAction = "", toshow = true }) => {
     setUserSelection(userAction);
     setClose(toshow);
   }, [userAction]);
+  const handleSignUpSubmit = async (formData: FormData)=> {
+    const name = formData.get("name") as string | undefined;
+  const email = formData.get("email") as string | undefined;
+  const password = formData.get("password") as string;
+  console.log(email)
+  console.log(name)
+  console.log(password)
+  
+  // if(!name || !email || !password){
+  //   throw new Error("Please Provide all the fields")
+  // }
+  // if(!name || !email || !password){
+  //   throw new Error("Please Provide all the fields")
+  // }
+  // await dbConnect()
+  // const user = await User.findOne({ email });
 
-  // const [isLogin, setIsLogin] = useState(userSelection)
-  //   const Input_field = (
-  //     id: string,
-  //     name: string,
-  //     type: string,
-  //     placeholder: string,
-  //     label_name: string,
-  //     html_for: string
-  //   ) => {
-  //     return (
 
-  //         <input
-  //           autoComplete="off"
-  //           id={id}
-  //           name={name}
-  //           type={type}
-  //           className="peer placeholder-transparent h-10 w-full border-b-2 border-gray-300 text-gray-900 focus:outline-none focus:border-rose-600"
-  //           placeholder={placeholder}
-  //         />
-  //     );
-  //   };
 
+  // if (user) {
+  //   throw new Error("User Already exist");
+  // } else {
+  //   const hashed = await hash(password, 10);
+  //   await User.create({
+  //     name,
+  //     email,
+  //     password: hashed,
+  //   });
+  // }
+
+  }
   return (
     <>
       {!close ? (
@@ -59,7 +72,7 @@ const Login_Signup = ({ userAction = "", toshow = true }) => {
                   </h1>
                 </motion.div>
                 <div className="divide-y divide-gray-300">
-                  <div className="py-8 text-base leading-6 space-y-4 text-grey-700 sm:text-lg sm:leading-7">
+                  <form action={userSelection ==="signup" ? handleSignUpSubmit : ""} className="py-8 text-base leading-6 space-y-4 text-grey-700 sm:text-lg sm:leading-7">
                     {userSelection === "Signup" ? (
                       <InputTag
                         id="name"
@@ -75,9 +88,9 @@ const Login_Signup = ({ userAction = "", toshow = true }) => {
 
                     <InputTag
                       id="email"
-                      name="Email Address"
+                      name="email"
                       type="text"
-                      placeholder="Name"
+                      placeholder="Email"
                       html_for="email"
                       label_name="Email Address"
                     />
@@ -96,7 +109,7 @@ const Login_Signup = ({ userAction = "", toshow = true }) => {
                         Submit
                       </button>
                     </div>
-                  </div>
+                  </form>
                 </div>
               </div>
               <p className=" p-2 -mt-3 mb-2">

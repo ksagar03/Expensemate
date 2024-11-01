@@ -15,12 +15,15 @@
     "@mui/material": "^6.1.4",
     "bcryptjs": "^2.4.3",
     "framer-motion": "^11.11.9",
+    "mongodb": "^6.10.0",
+    "mongoose": "^8.7.3",
     "next": "14.2.15",
     "next-auth": "^4.24.10",
     "react": "^18",
     "react-dom": "^18"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
