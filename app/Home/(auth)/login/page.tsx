@@ -1,11 +1,25 @@
-// "use client"
+"use client"
 import { motion } from "framer-motion";
 import Google_Svg from "../../../../public/SVGs/Google_Svg";
 import InputTag from "@/app/Components/InputTag";
 import Link from "next/link";
 import CloseIcon from "@mui/icons-material/Close";
+import { useState } from "react";
 
-const Login = () => {
+const page = () => {
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [error, setError] = useState("")
+  const handleLoginSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    console.log({email, password})
+    if(!email || !password){
+      setError("Please Provide all fields")
+    }
+    setEmail("")
+    setPassword("")
+  }
+  
   return (
     <div className="fixed inset-0 bg-gray-900 bg-opacity-80 flex items-center py-6 justify-center sm:py-12 z-10">
       <div className=" relative py-3 md:max-w-2xl mx-auto">
@@ -20,14 +34,17 @@ const Login = () => {
           <div className="mx-auto max-w-md">
             <h1 className=" text-2xl font-semibold">Login</h1>
             <div className="divide-y divide-gray-300">
-              <div className="py-8 text-base leading-6 space-y-4 text-grey-700 sm:text-lg sm:leading-7">
-                <InputTag
+              <form onSubmit={handleLoginSubmit} className="py-8 text-base leading-6 space-y-4 text-grey-700 sm:text-lg sm:leading-7">
+              <InputTag
                   id="email"
                   name="email"
-                  type="text"
+                  type="email"
                   placeholder="Email"
                   html_for="email"
                   label_name="Email Address"
+                  animation_delay={0.1}
+                  onChange={setEmail}
+                  value={email}
                 />
                 <InputTag
                   id="password"
@@ -37,15 +54,19 @@ const Login = () => {
                   html_for="password"
                   label_name="Password"
                   passwordHide={true}
+                  animation_delay={0.2}
+                  onChange={setPassword}
+                  value={password}
                 />
-                <div className="relative  ">
-                  <button className="bg-gradient-to-r from-[#4E65FF] to-[#A890FE] text-light font-semibold rounded-md px-3 py-2 hover:from-[#474955] hover:to-[#bebacf] ">
+                <div className="relative ">
+                  <button type="submit" className="bg-gradient-to-r from-[#4E65FF] to-[#A890FE] text-light font-semibold rounded-md px-3 py-2 hover:from-[#474955] hover:to-[#bebacf] ">
                     Submit
                   </button>
                 </div>
-              </div>
+              </form>
             </div>
           </div>
+          <p className=" -mt-5 mb-3 text-center text-red-600">{error}</p>
           <p className=" p-2 -mt-3 mb-2">
             don't have an account?{" "}
             <Link
@@ -72,4 +93,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default page;
