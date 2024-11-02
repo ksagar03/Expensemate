@@ -6,21 +6,43 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useState } from "react";
 import User from "@/app/models/userModel";
 import dbConnect from "@/app/lib/dbConnect";
+import { hash } from "bcryptjs";
 
 const page = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const handleLoginSubmit = async (e: React.FormEvent) => {
+
+  
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log({ name, email, password });
     if (!name || !email || !password) {
       setError("Please provide all the fields.");
       return;
     }
+    // handleSignUpSubmit({
+    //   name,
+    //   email,
+    //   password,
+    // })
     await dbConnect();
-    // const user = await User.findOne({ email });
+    console.log("db connected")
+    // const user = await User.findOne({ email: email });
+    // const user = await findUser(email)
+
+    if(await findUser(email)){
+      setError("User Already exist")
+    } else {
+      const passwordHashed = await hash(password, 10)
+      console.log(passwordHashed)
+      await User.create({
+        name,
+        email,
+        password: passwordHashed
+      })
+    }
 
     setName("");
     setEmail("");
@@ -40,10 +62,7 @@ const page = () => {
           <div className="mx-auto max-w-md">
             <h1 className=" text-2xl font-semibold">Signup</h1>
             <div className="divide-y divide-gray-300">
-              <form
-                onSubmit={handleLoginSubmit}
-                className="py-8 text-base leading-6 space-y-4 text-grey-700 sm:text-lg sm:leading-7"
-              >
+              <form onSubmit={handleSubmit} className="py-8 text-base leading-6 space-y-4 text-grey-700 sm:text-lg sm:leading-7">
                 <InputTag
                   id="name"
                   name="name"
@@ -81,6 +100,7 @@ const page = () => {
                 <div className="relative  ">
                   <button
                     type="submit"
+                 
                     className="bg-gradient-to-r from-[#4E65FF] to-[#A890FE] text-light font-semibold rounded-md px-3 py-2 hover:from-[#474955] hover:to-[#bebacf] "
                   >
                     Submit

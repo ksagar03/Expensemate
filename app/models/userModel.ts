@@ -1,3 +1,5 @@
+"use server";
+
 import mongoose from "mongoose";
 
 // interface objecttypes {
@@ -5,10 +7,9 @@ import mongoose from "mongoose";
 // }
 
 const userSchema = new mongoose.Schema({
-  username: {
+  name: {
     type: String,
-    required: [true, "Please provide a name/username"],
-    unique: true,
+    required: [true, "Please provide a name"],
   },
   email: {
     type: String,
@@ -17,7 +18,7 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: [true, "Please provide a email"],
+    required: [true, "Please provide a password"],
   },
   // isVerfied: {
   //   type: Boolean,
@@ -27,9 +28,8 @@ const userSchema = new mongoose.Schema({
   // forgotPasswordTokenExpiry: Date,
   // verifyToken: String,
   // verifyTokenExpiry: Date,
-
 });
 
-const User = mongoose.models.users || mongoose.model("users", userSchema)
+const User = mongoose.models.users || mongoose.model("users", userSchema);
 
-export default User
+export default User;

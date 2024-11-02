@@ -1,3 +1,4 @@
+"use server";
 import mongoose from "mongoose";
 
 type ConnectionObj = {
@@ -7,22 +8,28 @@ type ConnectionObj = {
 const connection: ConnectionObj = {};
 
 async function dbConnect(): Promise<void> {
-  
   try {
     if (connection.isConnected) {
       console.log("Already connected to the DB");
       return;
     }
-    const db = await mongoose.connect(process.env.MONGODB_URL || "", {dbName: "ExpenseTracker"}); // in the {} we can pass so many properties
+    // const MONGODB_URL = process.env.NEXT_PUBLIC_MONGODB_URL;
+    // if (!MONGODB_URL) {
+    //   throw new Error("URL not found");
+    // }
+    const db = await mongoose.connect(
+      process.env.NEXT_PUBLIC_MONGODB_URL || "",
+      {
+        dbName: "ExpenseTracker",
+      }
+    ); // in the {} we can pass so many properties
     connection.isConnected = db.connections[0].readyState;
 
     console.log("connected to the DB", db);
   } catch (error) {
     console.log("connection failed", error);
-
-    process.exit();
+    process.exit(500);
   }
 }
- 
+
 export default dbConnect;
-  
