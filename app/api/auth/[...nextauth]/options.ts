@@ -1,8 +1,7 @@
-"use server"
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
-import bcrypt from "bcryptjs";
+import {compare} from "bcryptjs";
 import dbConnect from "@/app/lib/dbConnect";
 import User from "@/app/models/userModel";
 import Credentials from "next-auth/providers/credentials";
@@ -33,7 +32,7 @@ export const authOptions: NextAuthOptions = {
           // if (!user.isVerified) {
           //   throw new Error("Please verify your account");
           // }
-          const isPasswordCorrect = await bcrypt.compare(
+          const isPasswordCorrect = await compare(
             credentials.password,
             user.password
           );
@@ -41,6 +40,7 @@ export const authOptions: NextAuthOptions = {
             return user;
           } else {
             throw new Error("InCorrect Passowrd");
+            // return "Incorrect Password"
           }
         } catch (error: any) {
           throw new Error(error);
@@ -77,6 +77,7 @@ export const authOptions: NextAuthOptions = {
   },
   secret: process.env.NEXTAUTH_SECRET,
   pages: {
-    signIn: "/Home",
+    signIn: "/Home/login",
+    // signUp: "/Home/sign-up",
   },
 };

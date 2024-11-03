@@ -5,19 +5,32 @@ import InputTag from "@/app/Components/InputTag";
 import Link from "next/link";
 import CloseIcon from "@mui/icons-material/Close";
 import { useState } from "react";
+import { signIn } from "next-auth/react";
 
 const page = () => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
+
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     console.log({email, password})
     if(!email || !password){
       setError("Please Provide all fields")
     }
+    try {
+             const result = await signIn('credentials', {
+                redirect: true,
+                email,
+                password,
+                callbackUrl: "/Home"
+              })
+
+          } catch(error){
+            console.log("error")
+          }
     setEmail("")
-    setPassword("")
+    setPassword("") 
   }
   
   return (
