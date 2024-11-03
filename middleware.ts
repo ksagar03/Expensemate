@@ -8,7 +8,7 @@ export async function middleware(request: NextRequest) {
   
   const token = await getToken({req:request})
   const url = request.nextUrl
-  if(token && (url.pathname.startsWith("/sign-in"))){
+  if(token && (url.pathname.startsWith("/login"))){
     return NextResponse.redirect(new URL('/Home', request.url))
   }
 

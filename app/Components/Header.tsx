@@ -5,6 +5,7 @@ import Logo from "../../public/Images/Logo.jpg";
 import Image from "next/image";
 import Login_Signup from "./Login_Signup";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 const Header = () => {
   const [loginorSignin, setLoginOrSignin] = useState("");
@@ -13,6 +14,8 @@ const Header = () => {
   //   setLoginOrSignin("")
   // }
   const router = useRouter()
+  // const {data: session, status} = useSession()
+  // console.log(session)
   return (
     <>
       <div className=" flex justify-between items-center text-center p-3 mx-3 md:mx-1 md:text-sm">

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { SessionProvider } from 'next-auth/react';
 import Footer from "../Components/Footer";
 import Head from "next/head";
 import Link from "next/link";

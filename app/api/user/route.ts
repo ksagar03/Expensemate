@@ -16,7 +16,8 @@ export async function POST(request: Request) {
       const user = await User.findOne({ email });
       if (user) {
         return NextResponse.json(user);
-      }
+      } 
+      // else {return NextResponse.json({message: "null"}) }
     } else if (action === "create" && name && email && password) {
       await User.create({
         name,
