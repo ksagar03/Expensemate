@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
-import { SessionProvider } from 'next-auth/react';
+
 import Footer from "../Components/Footer";
 import Head from "next/head";
 import Link from "next/link";
 import Header from "../Components/Header";
+import Provider from "@/context/Provider";
+import { Session } from "inspector";
 
 export const metadata: Metadata = {
   title: "Expense Tracker",
@@ -21,6 +23,7 @@ export default function RootLayout({
       <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet" />
       <link className="rounded-full" rel="icon" href="/favicon.ico" />
       </head>
+     <Provider>
       <body
       className=" bg-light"
       >
@@ -28,6 +31,7 @@ export default function RootLayout({
         {children}
         <Footer/>
       </body>
+      </Provider>
     </html>
   );
 }

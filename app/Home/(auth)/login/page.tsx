@@ -16,7 +16,6 @@ const page = () => {
 
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log({ email, password });
     if (!email || !password) {
       setError("Please Provide all fields");
       return

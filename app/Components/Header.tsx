@@ -14,8 +14,8 @@ const Header = () => {
   //   setLoginOrSignin("")
   // }
   const router = useRouter()
-  // const {data: session, status} = useSession()
-  // console.log(session)
+  const {data: session, status} = useSession()
+  console.log(session)
   return (
     <>
       <div className=" flex justify-between items-center text-center p-3 mx-3 md:mx-1 md:text-sm">

@@ -6,27 +6,26 @@ import dbConnect from "./dbConnect";
 import { redirect } from "next/dist/server/api-utils";
 import { signIn } from "next-auth/react";
 
-
-interface submitField { 
+interface submitField {
   name?: string;
   email: string;
   password: string;
 }
 
+export const handleSignUpSubmit = async ({
+  name,
+  email,
+  password,
+}: submitField) => {
+  console.log(email);
+  console.log(name);
+  console.log(password);
 
-export const handleSignUpSubmit = async ({name,email, password}: submitField) => {
-    
-  console.log(email)
-  console.log(name)
-  console.log(password)
-  
   // if(!name || !email || !password){
   //   throw new Error("Please Provide all the fields")
   // }
   // await dbConnect()
   // const user = await User.findOne({ email });
-
-
 
   // if (user) {
   //   throw new Error("User Already exist");
@@ -38,9 +37,8 @@ export const handleSignUpSubmit = async ({name,email, password}: submitField) =>
   //     password: hashed,
   //   });
   // }
-//   redirect // need to decide this
+  //   redirect // need to decide this
 };
-
 
 // export const handleLoginSubmit = async (formData:FormData) => {
 
@@ -60,8 +58,4 @@ export const handleSignUpSubmit = async ({name,email, password}: submitField) =>
 
 //     }
 
-   
-
 // }
-
-
