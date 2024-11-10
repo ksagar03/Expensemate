@@ -45,12 +45,12 @@ const Header = () => {
               Welcome{" "}
               <motion.button
                 onClick={(e) => setDropDown(!dropDown)}
-                className=" text-center inline-flex px-4 py-2 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-dark font-semibold text-lg rounded-xl shadow-lg transition duration-100 ease-in-out transform hover:shadow-xl focus:outline-none"
+                className=" text-center inline-flex px-4 py-2 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-dark font-semibold text-lg rounded-xl shadow-lg transition duration-100 transform hover:shadow-xl focus:outline-none"
                 whileHover={{ scale: 0.9 }}
                 whileTap={{ scale: 0.95 }}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ duration: 0.3 }}
+                transition={{ duration: 0.1 , ease: easeInOut }}
               >
                 {session?.user.name} ➜
               </motion.button>

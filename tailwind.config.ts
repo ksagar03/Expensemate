@@ -15,6 +15,9 @@ const config: Config = {
           primaryDark: "#58E6D9", // 80,230,217}
           yellowgreen: "#9acd32",
       },
+      backgroundImage:{
+        homebg:'url("/Images/expense_bg.jpg")',
+      },
     },
     screens: {
       "3xl": { max: "2580px" },
