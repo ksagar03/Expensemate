@@ -1,6 +1,7 @@
 "use client";
 import { Opacity } from "@mui/icons-material";
-import { motion } from "framer-motion";
+import { easeIn, motion } from "framer-motion";
+import { ReactHTMLElement } from "react";
 
 interface heading {
     text: string
@@ -53,5 +54,23 @@ export const Heading = ({text, className}:heading) => {
     </div>
   );
 };
+
+type card = {
+  className: string;
+  children ?: React.ReactNode
+}
+
+
+export const Card = ({className, children}:card) => {
+  return(
+    <motion.div className={`${className} ` }
+    initial={{x: -200, opacity:0}}
+    animate = {{x:0, opacity: 1, transition:{delay:0.2, ease: easeIn}}}
+    >
+      {children}
+    </motion.div>
+  )
+}
+
 
 
