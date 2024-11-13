@@ -73,7 +73,7 @@ import dbConnect from "@/app/lib/dbConnect";
 import Categories from "@/app/models/categoriesModel";
 import { NextApiRequest, NextApiResponse } from "next";
 
-let catchedCategories: string[] | null | undefined = undefined
+let cachedCategories : string[] | null | undefined = undefined
 
 export default async function handler(req:NextApiRequest, res:NextApiResponse){
   await dbConnect()
@@ -86,17 +86,17 @@ export default async function handler(req:NextApiRequest, res:NextApiResponse){
   switch(req.method){
     case "GET":
       try{
-        if(catchedCategories === null ||catchedCategories === undefined ){
+        if(cachedCategories  === null ||cachedCategories  === undefined ){
           const categoryDoc = await Categories.findOne()
-          catchedCategories = categoryDoc ? categoryDoc.categories : []
+          cachedCategories  = categoryDoc ? categoryDoc.categories : []
         }
 
-        let filterCategories = catchedCategories
+        let filterCategories = cachedCategories 
 
 
         if(searchQuery){
          
-          filterCategories = catchedCategories?.filter((category) => category.toLowerCase().includes(searchQuery.toLowerCase()))
+          filterCategories = cachedCategories ?.filter((category) => category.toLowerCase().includes(searchQuery.toLowerCase()))
         }
         res.status(200).json({success:true, categories: filterCategories})
 
@@ -104,7 +104,38 @@ export default async function handler(req:NextApiRequest, res:NextApiResponse){
         res.status(500).json({ success: false, error: 'Failed to fetch categories' });
       }
       break
+    case "POST":
+    try{
+
+      const {newCategory} = req.body
+
+      if(!newCategory){
+        return res.status(400).json({success: false , error:"Category name is required"})
+      }
+
+      let categoryData = await Categories.findOne();
+      if(!categoryData){
+        categoryData = new Categories({categories : []}) 
+      }
+
+      if(!categoryData.categories.includes(newCategory)){
+        categoryData.categories.push(newCategory)
+        await categoryData.save();
+        cachedCategories = categoryData.categories
+      }
+      res.status(201).json({success:true, category: newCategory})
+
+    }catch(error) {
+      res.status(500).json({success:false, error: "Failed to add category"})
+    }
+    break;
+
+    default:
+      res.setHeader("Allow", ["Get", "POST"])
+      res.status(405).end(`Method ${method} is not allowed`)
+    
   }
+  
 
 }
 
