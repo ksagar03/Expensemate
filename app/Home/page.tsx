@@ -6,12 +6,13 @@ import CategoriesSearchBar from "../Components/CategoriesSearchBar";
 import Graph from "../Components/Graph";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import Link from "next/link";
+import { Formater } from "../lib/currencyFormater";
 
 const Home = () => {
-  const formatter = new Intl.NumberFormat('en-IN', {
-    style:"currency",
-    currency: "INR"
-  })
+  // const formatter = new Intl.NumberFormat('en-IN', {
+  //   style:"currency",
+  //   currency: "INR"
+  // })
   return (
     <div className=" ">
       {/* <h1 className=" m-12 mt-14 text-center text-7xl font-semibold">Track your daily expenses</h1> */}
@@ -21,7 +22,7 @@ const Home = () => {
       <Card className=" block max-w-[24rem] h-28 ml-10 text-start p-6 bg-gradient-to-r from-yellow-400 to-violet-500 border-2 border-dark rounded-xl" >
         <div>
           <h1 className=" text-xl font-medium">
-            Total expenses : {formatter.format(1234732.21)}
+            Total expenses : {Formater("1234732.21")}
           </h1>
           
         </div>

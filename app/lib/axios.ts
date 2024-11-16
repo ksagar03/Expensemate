@@ -1,8 +1,8 @@
 import axios from "axios";
 
 
-export const fetchCategories = async () => {
-    const response = await axios.get('/api/categories')
+export const fetchCategories = async (searchQuery: string): Promise<string[]> => {
+    const response = await axios.get('/api/categories',{params: {search: searchQuery}})
     return response.data.categories
 }
 

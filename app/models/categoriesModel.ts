@@ -3,14 +3,15 @@
 import mongoose from "mongoose";
 
 const categoriesSchema = new mongoose.Schema({
-  category: {
-    type:[String],
+  categories: {
+    type: [String],
     required: [true, "Please provide categories"],
-    unique: true
+    unique: true,
+    default: [],
   },
 });
 
 const Categories =
   mongoose.models.categories || mongoose.model("categories", categoriesSchema);
 
-  export default Categories
+export default Categories;

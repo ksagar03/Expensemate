@@ -141,6 +141,7 @@
 // }
 //  this above Post and Get method will also not work, since the next js 13's App Router, requires named exports for each HTTP method (GET, POST, etc.),
 
+"use server";
 import { NextResponse, NextRequest } from "next/server";
 import dbConnect from "@/app/lib/dbConnect";
 import Categories from "@/app/models/categoriesModel";
@@ -154,7 +155,6 @@ export async function GET(req: NextRequest) {
   await dbConnect();
 
   const searchQuery = req.nextUrl.searchParams.get("search") || "";
-
   try {
     if (cachedCategories === null || cachedCategories === undefined) {
       const categoryData = await Categories.findOne();
@@ -167,40 +167,56 @@ export async function GET(req: NextRequest) {
         category.toLowerCase().includes(searchQuery.toLocaleLowerCase())
       );
     }
-    return NextResponse.json({success: true, categories: filterCategories},{status: 200})
-  } catch(error) {
-    return NextResponse.json({succes: false , error: "Failed to fetch categories"}, {status: 500})
+    return NextResponse.json(
+      { success: true, categories: filterCategories },
+      { status: 200 }
+    );
+  } catch (error) {
+    return NextResponse.json(
+      { succes: false, error: "Failed to fetch categories" },
+      { status: 500 }
+    );
   }
 }
 
+//  POST
 
-//  POST 
-
-export async function POST(req: NextRequest){
+export async function POST(req: NextRequest) {
   await dbConnect();
-  try{
-    const {newCategory} = await req.json();
+  try {
+    const body = await req.json();
+    console.log("req body:", body);
+    const { newCategory } = body;
 
-    if(!newCategory){
-      return NextResponse.json({success: false, error: 'Category name is required' }, { status: 400 })
+    if (!newCategory) {
+      return NextResponse.json(
+        { success: false, error: "Category name is required" },
+        { status: 400 }
+      );
     }
-    let categoryData = await Categories.findOne()
-    
-    if(!categoryData){
-      categoryData = new Categories({ categories: []})
+    let categoryData = await Categories.findOne();
+    console.log(categoryData);
 
+    if (!categoryData) {
+      categoryData = new Categories({ categories: [] });
+      console.log("new Category document ", categoryData);
     }
 
-    if(!categoryData.categories.includes(newCategory)){
-      categoryData.categories.push(newCategory)
-      await categoryData.save()
-      cachedCategories = categoryData.categories
+    if (!categoryData.categories.includes(newCategory)) {
+      categoryData.categories.push(newCategory);
+      await categoryData.save();
+      console.log('Updated categories:', categoryData.categories);
+      cachedCategories = categoryData.categories;
     }
 
-    return NextResponse.json({success: true, category: newCategory}, {status: 201})
-
-  }catch(error){
-    return NextResponse.json({success: false, error: "Failed to add category" }, {status: 500 })
-
+    return NextResponse.json(
+      { success: true, category: newCategory },
+      { status: 201 }
+    );
+  } catch (error) {
+    return NextResponse.json(
+      { success: false, error: "Failed to add category" },
+      { status: 500 }
+    );
   }
 }
