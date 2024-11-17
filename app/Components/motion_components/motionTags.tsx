@@ -38,7 +38,7 @@ export const Heading = ({text, className}:heading) => {
   return (
     <div className=" ">
       <motion.h1
-        className={` inline-block w-full font-semibold capitalize text-7xl text-dark text-center ${className}`}
+        className={` w-full font-semibold capitalize text-7xl md:text-5xl text-dark text-center ${className}`}
       variants={stringanime}
       initial ='initial'
       animate = "animate"

@@ -25,7 +25,7 @@ export default function RootLayout({
       </head>
      <Provider>
       <body
-      className=" bg-light"
+      className=" bg-light w-full"
       >
         <Header/>
         {children}
