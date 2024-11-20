@@ -58,10 +58,10 @@ const Header = () => {
             {dropDown ? (
               <span
                 onClick={() => setDropDown(!dropDown)}
-                className="fixed inset-0 z-0 w-full h-full bg-red-200 bg-opacity-80 "
+                className="fixed inset-0 z-10 w-full h-full bg-red-200 bg-opacity-80 "
               >
                 <motion.div
-                  className="z-10 min-w-[30v] bg-black/80 fixed top-1/2 left-1/2 -translate-x-1/2  -translate-y-1/2 rounded-lg  backdrop-blur-md p-20 content-center"
+                  className="z-20 min-w-[30v] bg-black/80 fixed top-1/2 left-1/2 -translate-x-1/2  -translate-y-1/2 rounded-lg  backdrop-blur-md p-20 content-center"
                   initial={{ scale: 0, opacity: 0, x: "-50%", y: "-50%" }}
                   animate={{
                     scale: 1,

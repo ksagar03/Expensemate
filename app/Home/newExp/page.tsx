@@ -5,6 +5,7 @@ import { Formater } from "@/app/lib/currencyFormater";
 import { Heading } from "@/app/Components/motion_components/motionTags";
 import SearchIcon from "@mui/icons-material/Search";
 import CloseIcon from "@mui/icons-material/Close";
+import { motion } from "framer-motion";
 
 const page = () => {
   const [categories, setCategories] = useState<string[]>([]);
@@ -55,10 +56,17 @@ const page = () => {
     <div className=" flex flex-col justify-center items-start md:items-center m-12 gap-3">
       <Heading
         text="Add new Expenses: "
-        className=" text-6xl md:text-4xl mb-5 "
+        className=" text-6xl md:text-4xl mb-10 "
       />
-
-      <div className="max-w-md mx-auto p-8  bg-gradient-to-r from-fuchsia-600 to-pink-600 rounded-lg shadow-md space-y-5">
+      <motion.div
+        className="max-w-lg mx-auto p-7  bg-gradient-to-r from-fuchsia-600 to-pink-600 rounded-xl shadow-md space-y-5"
+        initial={{ scale: 0, opacity: 0}}
+        animate={{
+          scale: 1,
+          opacity: 1,
+          transition: { duration: 0.3, ease: "easeInOut" },
+        }}
+      >
         <div className="relative">
           <span className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
             <SearchIcon sx={{ color: "burlywood" }} />
@@ -67,7 +75,7 @@ const page = () => {
             type="text"
             id="searchInput"
             placeholder="Search Categories..."
-            className="w-full pl-10 px-4 py-3 text-gray-400 bg-gray-700  border border-orange-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
+            className="w-full pl-10 px-4 py-3 border text-gray-400 bg-gray-700   border-orange-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
             value={newCategory}
             onChange={(e) => setNewCategory(e.target.value)}
           />
@@ -100,14 +108,18 @@ const page = () => {
             </ul>
           )}
         </div>
-        <label htmlFor="Amount" className=" text-[#deb887] absolute text-xl px-4 p-3 font-semibold  ">₹</label>
+        <label
+          htmlFor="Amount"
+          className=" text-[#deb887] absolute text-xl px-4 p-3 font-semibold  "
+        >
+          ₹
+        </label>
         <input
-        id="Amount"
+          id="Amount"
           type="number"
           placeholder="Amount Spent"
           className="w-full pl-10 px-4 py-3 border text-gray-400 bg-gray-700   border-orange-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
         />
-      
 
         <textarea
           placeholder="Add description..."
@@ -115,10 +127,12 @@ const page = () => {
           className="w-full  text-gray-400 bg-gray-700   border-orange-600 px-4 py-2 border  rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
         />
         <span className="flex items-center justify-center">
-        <button className="bg-gradient-to-r from-purple-500 to-purple-900 px-4 py-2 rounded-lg text-white font-semibold hover:bg-gradient-to-l hover:from-purple-500 hover:to-purple-900 "> Submit</button>
+          <button className="bg-gradient-to-r from-purple-500 to-purple-900 px-4 py-2 rounded-lg text-white font-semibold hover:bg-gradient-to-l hover:from-purple-500 hover:to-purple-900 ">
+            {" "}
+            Submit
+          </button>
         </span>
-       
-      </div>
+      </motion.div>
     </div>
   );
 };
