@@ -6,8 +6,20 @@ import mongoose from "mongoose";
 // interface objecttypes {
 //     type: string
 // }
+interface Expense {
+  category: string;
+  amount_spent: number;
+  description?: string;
+}
 
-const userSchema = new mongoose.Schema({
+export interface User_interface extends mongoose.Document {
+  name: string;
+  email: string;
+  password: string;
+  user_expenses: Expense[];
+}
+
+const userSchema: mongoose.Schema<User_interface> = new mongoose.Schema({
   name: {
     type: String,
     required: [true, "Please provide a name"],

@@ -182,8 +182,9 @@ export async function GET(req: NextRequest) {
 //  POST
 
 export async function POST(req: NextRequest) {
-  await dbConnect();
+  
   try {
+    await dbConnect();
     const body = await req.json();
     console.log("req body:", body);
     const { newCategory } = body;
