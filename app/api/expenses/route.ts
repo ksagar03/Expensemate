@@ -2,13 +2,17 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/app/lib/dbConnect";
-import User from "@/app/models/userModel";
+import User, { User_interface } from "@/app/models/userModel";
 
 interface expenseData {
   userID: string;
   category: string;
   amount_spent: number;
   description?: string;
+}
+
+interface expenseIdData extends expenseData {
+  expenseID: string;
 }
 
 export async function POST(req: NextRequest) {
@@ -35,6 +39,83 @@ export async function POST(req: NextRequest) {
     );
   }
 }
-export async function  GET (req: NextRequest){
-    const userID = req.nextUrl.searchParams.get("userID") || "";
+export async function GET(req: NextRequest) {
+  const userID = req.nextUrl.searchParams.get("userID") || "";
+  try {
+    await dbConnect();
+    const user = await User.findById(userID);
+    if (!user) {
+      return NextResponse.json({ message: "User not found" }, { status: 404 });
+    }
+    NextResponse.json({ expenses: user.user_expenses });
+  } catch (error) {
+    NextResponse.json(
+      { message: `Failed to Fetch the expenses: ${error}` },
+      { status: 500 }
+    );
+  }
+}
+
+export async function PUT(req: NextRequest) {
+  try {
+    const {
+      userID,
+      expenseID,
+      category,
+      amount_spent,
+      description,
+    }: expenseIdData = await req.json();
+    await dbConnect();
+    const user = (await User.findById(userID)) as User_interface | null;
+
+    if (!user) {
+      return NextResponse.json({ message: "user not found" }, { status: 404 });
+    }
+    const expense = user.user_expenses.id(expenseID);
+
+    if (!expense) {
+      return NextResponse.json(
+        { message: "Expense not found" },
+        { status: 404 }
+      );
+    }
+    expense.category = category || expense.category;
+    expense.amount_spent = amount_spent || expense.amount_spent;
+    expense.description = description || expense.description;
+
+    await user.save();
+
+    NextResponse.json(
+      { message: `Expense updated successfully: ${user} ` },
+      { status: 201 }
+    );
+  } catch (error) {
+    NextResponse.json(
+      { message: `failed to update expense: ${error}` },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(req: NextRequest) {
+  try {
+    const { userID, expenseID }: expenseIdData = await req.json();
+    await dbConnect();
+    const user = (await User.findById(userID)) as User_interface | null;
+    if (!user) {
+      return NextResponse.json({ message: "user not found" }, { status: 404 });
+    }
+    user.user_expenses.pull(expenseID);
+    await user.save();
+
+    NextResponse.json(
+      { message: `Expense deleted successfully: ${user} ` },
+      { status: 201 }
+    );
+  } catch (error) {
+    NextResponse.json(
+      { message: `failed to delete expense: ${error}` },
+      { status: 500 }
+    );
+  }
 }
