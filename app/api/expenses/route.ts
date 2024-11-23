@@ -4,14 +4,14 @@ import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/app/lib/dbConnect";
 import User, { User_interface } from "@/app/models/userModel";
 
-interface expenseData {
+export interface expenseData {
   userID: string;
   category: string;
   amount_spent: number;
   description?: string;
 }
 
-interface expenseIdData extends expenseData {
+export interface expenseIdData extends expenseData {
   expenseID: string;
 }
 

@@ -1,12 +1,76 @@
 import axios from "axios";
+import { expenseData, expenseIdData } from "../api/expenses/route";
 
-
-export const fetchCategories = async (searchQuery: string): Promise<string[]> => {
-    const response = await axios.get('/api/categories',{params: {search: searchQuery}})
-    return response.data.categories
-}
+export const fetchCategories = async (
+  searchQuery: string
+): Promise<string[]> => {
+  const response = await axios.get("/api/categories", {
+    params: { search: searchQuery },
+  });
+  return response.data.categories;
+};
 
 export const addCategory = async (newCategory: string) => {
-    const response = await axios.post('/api/categories', {newCategory})
-    return response.data.category
-}
+  const response = await axios.post("/api/categories", { newCategory });
+  return response.data.category;
+};
+
+export const addExpenses = async ({
+  userID,
+  category,
+  amount_spent,
+  description,
+}: expenseData) => {
+  try {
+    const response = await axios.post("/api/expenses", {
+      userID,
+      category,
+      amount_spent,
+      description,
+    });
+    console.log(response.data);
+  } catch (error) {
+    console.error("error while adding the expenses", error);
+  }
+};
+
+export const fetchExpenses = async (userID: string) => {
+  try {
+    const response = await axios.get(`/api/expenses/${userID}`);
+    console.log("User expenses", response.data);
+  } catch (error) {
+    console.error("error in fetching expenses", error);
+  }
+};
+
+export const updateExpenses = async ({
+  userID,
+  expenseID,
+  category,
+  amount_spent,
+  description,
+}: expenseIdData) => {
+  try {
+    const response = await axios.put("/api/expenses", {
+      userID,
+      expenseID,
+      category,
+      amount_spent,
+      description,
+    });
+    console.log(response.data);
+  } catch (error) {
+    console.error("error in updating", error);
+  }
+};
+
+export const deleteExpenses = async (userID: string, expenseID: string) => {
+  try {
+    const response = await axios.delete("/api/expenses", {
+      data: { userID, expenseID },
+    });
+    console.log("expense delete", response.data);
+  } catch (error) {
+    console.error("error in deleting", error);
+  }
+};
