@@ -7,6 +7,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import CloseIcon from "@mui/icons-material/Close";
 import { motion } from "framer-motion";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 
 const page = () => {
   const [categories, setCategories] = useState<string[]>([]);
@@ -17,12 +18,23 @@ const page = () => {
 const [tosearch, setToSearch] = useState(true)
   const [description, setDescription] = useState("");
   const [activeIndex, setActiveIndex] = useState(0);
+  const [selectedCategory, setSelectedCategory] = useState("")
 
-  const currentRef = useRef(null);
+  const currentRef = useRef<HTMLInputElement>(null);
 
   const { data: session, status } = useSession();
-
+  useEffect(()=> {
+    if (currentRef.current){
+      currentRef.current.focus()
+    }
+    
+  })
   useEffect(() => {
+    if( selectedCategory !== newCategory){
+      setToSearch(true)
+      setActiveIndex(0)
+    }
+
     if (newCategory.length >= 2 && tosearch) {
       const loadCategories = async () => {
         try {
@@ -72,7 +84,7 @@ const [tosearch, setToSearch] = useState(true)
     if (userID && newCategory && amountSpent) {
       await addExpenses({
         userID: userID,
-        category: newCategory,
+        category: selectedCategory,
         amount_spent: amountSpent,
         description: description,
       });
@@ -102,6 +114,7 @@ const [tosearch, setToSearch] = useState(true)
     if (e.key == "Enter") {
       if(categories.length !== 0){
         setNewCategory(categories[activeIndex]);
+        setSelectedCategory(categories[activeIndex])
         setToSearch(!tosearch)
       }else {
         setError("please add category to the List")
@@ -139,8 +152,9 @@ const [tosearch, setToSearch] = useState(true)
               value={newCategory}
               onChange={(e) => setNewCategory(e.target.value)}
               onKeyDown={(e) => handleKeyDown(e)}
+              autoComplete="off"
             />
-            {newCategory ? (
+            {newCategory && tosearch ? (
               <button
                 className={`flex absolute inset-0 left-[21rem] md:left-[19rem] items-center justify-center text-light hover:text-yellowgreen rounded-full ${
                   categories.length
@@ -215,6 +229,7 @@ const [tosearch, setToSearch] = useState(true)
               Submit
             </button>
           </span>
+          <p className="text-center text-light">View all your <Link href="viewAllExp" className="hover:text-amber-100 underline  cursor-pointer">Expenses</Link></p>
         </motion.div>
       ) : (
         <p className="text-center text-2xl font-medium">
