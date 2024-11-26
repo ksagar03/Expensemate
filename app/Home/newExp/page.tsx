@@ -15,33 +15,30 @@ const page = () => {
   const [error, setError] = useState<string | null>(null);
   const [amount, setAmount] = useState("");
   const [amountSpent, setAmountSpent] = useState<number>();
-const [tosearch, setToSearch] = useState(true)
+  const [tosearch, setToSearch] = useState(true);
   const [description, setDescription] = useState("");
   const [activeIndex, setActiveIndex] = useState(0);
-  const [selectedCategory, setSelectedCategory] = useState("")
+  const [selectedCategory, setSelectedCategory] = useState("");
 
   const currentRef = useRef<HTMLInputElement>(null);
 
   const { data: session, status } = useSession();
-  useEffect(()=> {
-    if (currentRef.current){
-      currentRef.current.focus()
-    }
-    
-  })
   useEffect(() => {
-    if( selectedCategory !== newCategory){
-      setToSearch(true)
-      setActiveIndex(0)
+    if (currentRef.current) {
+      currentRef.current.focus();
+    }
+  }, []);
+  useEffect(() => {
+    if (selectedCategory !== newCategory) {
+      setToSearch(true);
+      setActiveIndex(0);
     }
 
     if (newCategory.length >= 2 && tosearch) {
       const loadCategories = async () => {
         try {
-         
-            const fetchedCategory = await fetchCategories(newCategory);
-            setCategories(fetchedCategory)
-  
+          const fetchedCategory = await fetchCategories(newCategory);
+          setCategories(fetchedCategory);
         } catch (error) {
           setError(`failed to load categories ${error}`);
         }
@@ -94,8 +91,8 @@ const [tosearch, setToSearch] = useState(true)
     setAmountSpent(0);
     setNewCategory("");
     setDescription("");
-    setToSearch(true)
-    setError("")
+    setToSearch(true);
+    setError("");
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -112,14 +109,13 @@ const [tosearch, setToSearch] = useState(true)
     }
 
     if (e.key == "Enter") {
-      if(categories.length !== 0){
+      if (categories.length !== 0) {
         setNewCategory(categories[activeIndex]);
-        setSelectedCategory(categories[activeIndex])
-        setToSearch(!tosearch)
-      }else {
-        setError("please add category to the List")
+        setSelectedCategory(categories[activeIndex]);
+        setToSearch(!tosearch);
+      } else {
+        setError("please add category to the List");
       }
-    
     }
   };
 
@@ -229,7 +225,15 @@ const [tosearch, setToSearch] = useState(true)
               Submit
             </button>
           </span>
-          <p className="text-center text-light">View all your <Link href="viewAllExp" className="hover:text-amber-100 underline  cursor-pointer">Expenses</Link></p>
+          <p className="text-center text-light">
+            View all your{" "}
+            <Link
+              href="viewAllExp"
+              className="hover:text-amber-100 underline  cursor-pointer"
+            >
+              Expenses
+            </Link>
+          </p>
         </motion.div>
       ) : (
         <p className="text-center text-2xl font-medium">

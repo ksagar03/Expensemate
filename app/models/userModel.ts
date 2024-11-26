@@ -16,8 +16,7 @@ export interface User_interface extends mongoose.Document {
   name: string;
   email: string;
   password: string;
-  user_expenses: mongoose.Types.DocumentArray<Expense>;  // used this as in the mongoose it attaches each id to the newly created object and if we try to access that id the typescript throws error .
-
+  user_expenses: mongoose.Types.DocumentArray<Expense>; // used this as in the mongoose it attaches each id to the newly created object and if we try to access that id the typescript throws error .
 }
 
 const userSchema: mongoose.Schema<User_interface> = new mongoose.Schema({
@@ -55,6 +54,10 @@ const userSchema: mongoose.Schema<User_interface> = new mongoose.Schema({
       description: {
         type: String,
         required: [false, "Please provide a description for the expense"],
+      },
+      timestamp: {
+        type: Date,
+        default: Date.now,
       },
     },
   ],
