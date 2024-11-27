@@ -1,7 +1,39 @@
+"use client"
+
 import React from "react";
 // import { motion } from "framer-motion";
+import { fetchExpenses } from "@/app/lib/axios";
+import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 
 const page = () => {
+  const [fetchedExp ,setFetchedExp] = useState([])
+  const [error, setError] = useState("")
+  const {data: session, status} = useSession()
+  useEffect(() => {
+    
+    if(session?.user){
+    const userID = session?.user._id ?? "";
+    console.log(userID)
+    const expenseData = async () => {
+    try{
+      
+        const fetchData = await fetchExpenses(userID)
+        console.log(fetchData)
+        setFetchedExp(fetchData)
+    
+    }catch(error){
+      setError(`error occured while fetching the data ${error}`)
+
+    }
+    expenseData()
+  }
+  }
+  },[])
+
+
+
+
   const userExpenses = [
     {
       category: "Food",

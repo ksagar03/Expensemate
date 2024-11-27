@@ -15,6 +15,7 @@ export const addCategory = async (newCategory: string) => {
   return response.data.category;
 };
 
+// POST
 export const addExpenses = async ({
   userID,
   category,
@@ -34,15 +35,20 @@ export const addExpenses = async ({
   }
 };
 
+//  GET
 export const fetchExpenses = async (userID: string) => {
   try {
-    const response = await axios.get(`/api/expenses/${userID}`);
+    const response = await axios.get("/api/expenses", {
+      params: { userID: userID },
+    });
     console.log("User expenses", response.data);
+    return response.data;
   } catch (error) {
     console.error("error in fetching expenses", error);
   }
 };
 
+// PUT
 export const updateExpenses = async ({
   userID,
   expenseID,
@@ -64,6 +70,7 @@ export const updateExpenses = async ({
   }
 };
 
+// DELETE
 export const deleteExpenses = async (userID: string, expenseID: string) => {
   try {
     const response = await axios.delete("/api/expenses", {
