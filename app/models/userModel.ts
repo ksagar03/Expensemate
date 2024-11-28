@@ -6,7 +6,7 @@ import mongoose from "mongoose";
 // interface objecttypes {
 //     type: string
 // }
-interface Expense {
+export interface Expense {
   category: string;
   amount_spent: number;
   description?: string;

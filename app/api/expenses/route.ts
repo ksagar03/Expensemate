@@ -47,7 +47,7 @@ export async function GET(req: NextRequest) {
     if (!user) {
       return NextResponse.json({ message: "User not found" }, { status: 404 });
     }
-    NextResponse.json({ expenses: user.user_expenses });
+    return NextResponse.json({ expenses: user.user_expenses });
   } catch (error) {
     NextResponse.json(
       { message: `Failed to Fetch the expenses: ${error}` },
