@@ -3,8 +3,10 @@ import { fetchExpenses } from "@/app/lib/axios";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 
-import ExpenseDetails, {
+import {
+  ExpenseDetails,
   ExpenseDataDef,
+  UpdateExpenses,
 } from "@/app/Components/ExpenseDetails";
 
 const Page = () => {
@@ -59,6 +61,8 @@ const Page = () => {
           />
         ))}
       </div>
+      {/* <UpdateExpenses/> */}
+  
     </div>
   );
 };

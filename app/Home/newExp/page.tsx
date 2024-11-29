@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import { addCategory, fetchCategories, addExpenses } from "@/app/lib/axios";
-import { Formater } from "@/app/lib/currencyFormater";
+
 import { Heading } from "@/app/Components/motion_components/motionTags";
 import SearchIcon from "@mui/icons-material/Search";
 import CloseIcon from "@mui/icons-material/Close";
