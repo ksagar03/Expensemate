@@ -71,7 +71,7 @@ export const updateExpenses = async ({
 };
 
 // DELETE
-export const deleteExpenses = async (userID: string, expenseID: string) => {
+export const deleteExpense = async (userID: string, expenseID: string) => {
   try {
     const response = await axios.delete("/api/expenses", {
       data: { userID, expenseID },
