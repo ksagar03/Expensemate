@@ -1,123 +1,69 @@
 "use client";
-import React, { useState, useEffect, useRef } from "react";
-import { addCategory, fetchCategories, addExpenses } from "@/app/lib/axios";
-
+import React, { useEffect, useState} from "react";
+import {addExpenses } from "@/app/lib/axios";
 import { Heading } from "@/app/Components/motion_components/motionTags";
-import SearchIcon from "@mui/icons-material/Search";
-import CloseIcon from "@mui/icons-material/Close";
 import { motion } from "framer-motion";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import CategoriesSearchBar from "@/app/Components/CategoriesSearchBar";
 
 const page = () => {
-  const [categories, setCategories] = useState<string[]>([]);
-  const [newCategory, setNewCategory] = useState("");
+  const [searchedData, setSearchedData] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const [amount, setAmount] = useState("");
+  // const [amount, setAmount] = useState("");
   const [amountSpent, setAmountSpent] = useState<number>();
-  const [tosearch, setToSearch] = useState(true);
   const [description, setDescription] = useState("");
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [selectedCategory, setSelectedCategory] = useState("");
+  const [isExpenseAdded, setIsExpenseAdded] = useState(false)
 
-  const currentRef = useRef<HTMLInputElement>(null);
+useEffect(()=>{
+  if(isExpenseAdded){
+    setIsExpenseAdded(false)
+  }
+}, [isExpenseAdded])
+
+
+  const searchedCategory =  (data: string) => {
+    setSearchedData(data);
+  };
+
+  const handleSearchBarerror = (searchbar_error: string) => {
+    if(searchbar_error){
+      console.log("search bar error message: ", searchbar_error);
+      setError(searchbar_error)
+    }
+  }
+
 
   const { data: session, status } = useSession();
-  useEffect(() => {
-    if (currentRef.current) {
-      currentRef.current.focus();
-    }
-  }, []);
-  useEffect(() => {
-    if (selectedCategory !== newCategory) {
-      setToSearch(true);
-      setActiveIndex(0);
-    }
 
-    if (newCategory.length >= 2 && tosearch) {
-      const loadCategories = async () => {
-        try {
-          const fetchedCategory = await fetchCategories(newCategory);
-          setCategories(fetchedCategory);
-        } catch (error) {
-          setError(`failed to load categories ${error}`);
-        }
-      };
-      loadCategories();
-      console.log("fetched : ", categories);
-    } else {
-      setCategories([]);
-    }
-  }, [newCategory]);
-  const handleAddCategory = async () => {
-    try {
-      if (!categories.includes(newCategory)) {
-        // const addedCategory = await addCategory(newCategory);
-        // setCategories((prev) => [...prev, addedCategory]);
-        await addCategory(newCategory);
-        setCategories([]);
-      } else {
-        alert(" Category already exists");
-      }
-      setNewCategory("");
-    } catch (error) {
-      setError("Failed to add category");
-    }
-  };
-  // console.log("added category:", newCategory);
-  // console.log("fetched : ",categories)
+  // const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   let rawValue = e.target.value;
 
-  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let rawValue = e.target.value;
+  //   const numaricValue = rawValue.replace(/[^\d.-]/g, "");
 
-    const numaricValue = rawValue.replace(/[^\d.-]/g, "");
-
-    setAmount(numaricValue);
-  };
+  //   setAmount(numaricValue);
+  // };
   // const formatedValue = Formater(amount);
 
   const handleOnclick = async () => {
     const userID = session?.user._id ?? "";
-    if (userID && newCategory && amountSpent) {
+    if (userID && searchedData && amountSpent) {
       await addExpenses({
         userID: userID,
-        category: selectedCategory,
+        category: searchedData,
         amount_spent: amountSpent,
         description: description,
       });
     } else {
       setError("Please enter all the fileds");
     }
+    setIsExpenseAdded(true)
     setAmountSpent(0);
-    setNewCategory("");
+    setSearchedData("")
     setDescription("");
-    setToSearch(true);
     setError("");
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    // console.log("index: ", activeIndex)
-    if (e.key == "ArrowDown" && categories.length > 0) {
-      setActiveIndex(
-        activeIndex == categories.length - 1 ? 0 : activeIndex + 1
-      );
-    }
-    if (e.key == "ArrowUp" && categories.length > 0) {
-      setActiveIndex(
-        activeIndex == 0 ? categories.length - 1 : activeIndex - 1
-      );
-    }
-
-    if (e.key == "Enter") {
-      if (categories.length !== 0) {
-        setNewCategory(categories[activeIndex]);
-        setSelectedCategory(categories[activeIndex]);
-        setToSearch(!tosearch);
-      } else {
-        setError("please add category to the List");
-      }
-    }
-  };
 
   return (
     <div className=" flex flex-col justify-center min-h-screen  m-12 gap-3">
@@ -135,58 +81,7 @@ const page = () => {
             transition: { duration: 0.3, ease: "easeInOut" },
           }}
         >
-          <div className="relative">
-            <span className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
-              <SearchIcon sx={{ color: "burlywood" }} />
-            </span>
-            <input
-              ref={currentRef}
-              type="text"
-              id="searchInput"
-              placeholder="Search Categories..."
-              className="w-full pl-10 px-4 py-3 border text-gray-400 bg-gray-700   border-orange-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
-              value={newCategory}
-              onChange={(e) => setNewCategory(e.target.value)}
-              onKeyDown={(e) => handleKeyDown(e)}
-              autoComplete="off"
-            />
-            {newCategory && tosearch ? (
-              <button
-                className={`flex absolute inset-0 left-[21rem] md:left-[19rem] items-center justify-center text-light hover:text-yellowgreen rounded-full ${
-                  categories.length
-                    ? ""
-                    : "transition-transform rotate-45  ease-in delay-500"
-                }  `}
-                onClick={
-                  categories.length
-                    ? () => setNewCategory("")
-                    : handleAddCategory
-                }
-              >
-                <CloseIcon />
-              </button>
-            ) : (
-              ""
-            )}
-            {categories.length > 0 && (
-              <ul className="absolute z-20 left-0 right-0 mt-2 bg-light   border-gray-600 border rounded-lg shadow-lg max-h-48 overflow-y-auto">
-                {categories.map((category: string, index) => (
-                  <li
-                    onClick={() => {
-                      setNewCategory(categories[index]);
-                      setCategories([]);
-                    }}
-                    key={index}
-                    className={`px-4 py-1 border border-gray-500 cursor-pointer ${
-                      activeIndex == index ? " bg-slate-300" : ""
-                    } hover:bg-slate-300 `}
-                  >
-                    {category}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
+          <CategoriesSearchBar currentCategory={searchedCategory} searchBarErrrmsg={handleSearchBarerror} isExpenseAdded={isExpenseAdded} />
           <label
             htmlFor="Amount"
             className=" text-[#deb887] absolute z-10 text-xl px-4 p-3 font-semibold  "
@@ -244,4 +139,5 @@ const page = () => {
   );
 };
 
-export default page;
+export default page
+
