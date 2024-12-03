@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { useEffect, useState, useRef } from "react";
 import React from "react";
 import { addCategory, fetchCategories } from "@/app/lib/axios";
@@ -7,34 +7,41 @@ import CloseIcon from "@mui/icons-material/Close";
 
 interface searchbarparams {
   currentCategory(data: string): void;
-  isExpenseAdded?:boolean;
-  searchBarErrrmsg(error:string): void;
-  UpdateExpenses?:boolean
+  isExpenseAdded?: boolean;
+  searchBarErrrmsg(error: string): void;
+  UpdatedCategoryEdit?: string;
 }
 
-const CategoriesSearchBar = ({ currentCategory, searchBarErrrmsg, isExpenseAdded }: searchbarparams) => {
+const CategoriesSearchBar = ({
+  currentCategory,
+  searchBarErrrmsg,
+  isExpenseAdded,
+  UpdatedCategoryEdit,
+  
+}: searchbarparams) => {
   const [categories, setCategories] = useState<string[]>([]);
   const [newCategory, setNewCategory] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [tosearch, setToSearch] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [activeIndex, setActiveIndex] = useState(0);
-  const [isExpAdded, setExpAdded] = useState(false)
+  const [isExpAdded, setExpAdded] = useState(false);
 
   const currentRef = useRef<HTMLInputElement>(null);
 
-
-  // isExpenseAdded is not changing to false 
-  useEffect (()=>{
-    if(error){
-      searchBarErrrmsg(error)
+  // isExpenseAdded is not changing to false
+  useEffect(() => {
+    if (error) {
+      searchBarErrrmsg(error);
     }
-    if(isExpenseAdded){
-      setExpAdded(isExpenseAdded)
+    if (isExpenseAdded) {
+      setExpAdded(isExpenseAdded);
     }
-    console.log("hello")
-    
-  },[error, isExpenseAdded])
+    console.log(UpdatedCategoryEdit)
+    if (UpdatedCategoryEdit) {
+      setNewCategory(UpdatedCategoryEdit)
+    }
+  }, [error, isExpenseAdded, UpdatedCategoryEdit]);
 
   useEffect(() => {
     if (currentRef.current) {
@@ -47,6 +54,7 @@ const CategoriesSearchBar = ({ currentCategory, searchBarErrrmsg, isExpenseAdded
       setToSearch(true);
       setActiveIndex(0);
     }
+
     if (newCategory.length >= 2 && tosearch) {
       const loadCategories = async () => {
         try {
@@ -54,7 +62,6 @@ const CategoriesSearchBar = ({ currentCategory, searchBarErrrmsg, isExpenseAdded
           setCategories(fetchedCategory);
         } catch (error) {
           setError(`failed to load categories ${error}`);
-
         }
       };
       loadCategories();
@@ -64,14 +71,12 @@ const CategoriesSearchBar = ({ currentCategory, searchBarErrrmsg, isExpenseAdded
     }
   }, [newCategory]);
 
-  
-
-  if(isExpAdded){
-    setNewCategory("")
-    setSelectedCategory("")
-    setError("")
-    setToSearch(true)
-    setExpAdded(false)
+  if (isExpAdded) {
+    setNewCategory("");
+    setSelectedCategory("");
+    setError("");
+    setToSearch(true);
+    setExpAdded(false);
   }
 
   const handleAddCategory = async () => {

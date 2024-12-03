@@ -1,5 +1,4 @@
 "use client";
-import { ObjectId } from "mongoose";
 import { fetchExpenses } from "@/app/lib/axios";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
@@ -9,14 +8,15 @@ import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutli
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import React from "react";
 import { updateExpenses, deleteExpense } from "@/app/lib/axios";
+import CategoriesSearchBar from "@/app/Components/CategoriesSearchBar";
 
 export interface ExpenseDataDef extends Expense {
   timestamp: string;
-  _id: string
-  
+  _id: string;
 }
 
 const Page = () => {
+  const [searchedData, setSearchedData] = useState("");
   const [fetchedExp, setFetchedExp] = useState<ExpenseDataDef[]>([]);
   const [error, setError] = useState("");
   const [isEdit, setIsEdit] = useState(false);
@@ -25,11 +25,36 @@ const Page = () => {
     category: "",
     amount_spent: 0,
     description: "",
-    _id: ""
+    _id: "",
   });
+  const [isExpenseAdded, setIsExpenseAdded] = useState(false);
+
+  useEffect(() => {
+    if (isExpenseAdded) {
+      setIsExpenseAdded(false);
+    }
+  }, [isExpenseAdded]);
+  // useEffect(() => {
+  //   console.log("Updated form data:", formData);
+  // }, [formData]);
+
+  const searchedCategory = (data: string) => {
+    console.log("view all exp", data);
+    setSearchedData(data);
+  };
+  const handleSearchBarerror = (searchbar_error: string) => {
+    if (searchbar_error) {
+      console.log("search bar error message: ", searchbar_error);
+      setError(searchbar_error);
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setIsExpenseAdded(true);
+    setFromData((prevData) => ({ ...prevData, category: searchedData }));
     console.log("form submitted", formData);
+
     setIsEdit(false);
   };
   const handleOnChange = (
@@ -78,11 +103,24 @@ const Page = () => {
         {/* Grid layout for expenses */}
         <div className="grid grid-cols-1 gap-6">
           {fetchedExp.map((expense) => (
-            <div key={expense._id} className="bg-white p-5  relative rounded-lg shadow-lg border border-gray-200 hover:shadow-xl transition-shadow duration-300 ease-in-out">
+            <div
+              key={expense._id}
+              className="bg-white p-5  relative rounded-lg shadow-lg border border-gray-200 hover:shadow-xl transition-shadow duration-300 ease-in-out"
+            >
               <span className="absolute flex right-[1rem] gap-2 ">
-                <span onClick={() => { 
-                   setFromData({category: expense.category , amount_spent: expense.amount_spent, description: expense.description ? expense.description : "" , _id: expense._id })
-                  setIsEdit(true)}}>
+                <span
+                  onClick={() => {
+                    setFromData({
+                      category: expense.category,
+                      amount_spent: expense.amount_spent,
+                      description: expense.description
+                        ? expense.description
+                        : "",
+                      _id: expense._id,
+                    });
+                    setIsEdit(true);
+                  }}
+                >
                   <DriveFileRenameOutlineIcon className="cursor-pointer hover:text-blue-600" />
                 </span>
                 <span>
@@ -115,22 +153,28 @@ const Page = () => {
             className="bg-light rounded-lg shadow-lg w-96 p-6"
           >
             <h2 className="text-xl font-bold mb-4"> Edit Expense</h2>
+            <label
+              htmlFor="Category"
+              className="block text-gray-700 font-medium"
+            >
+              Category<span className="text-red-600">*</span>
+            </label>
+            <CategoriesSearchBar
+              UpdatedCategoryEdit={formData.category}
+              currentCategory={searchedCategory}
+              searchBarErrrmsg={handleSearchBarerror}
+              isExpenseAdded={isExpenseAdded}
+            />
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
-                <label
-                  htmlFor="Category"
-                  className="block text-gray-700 font-medium"
-                >
-                  Category<span className="text-red-600">*</span>
-                </label>
-                <input
+                {/* <input
                   type="text"
                   name="category"
                   value={formData.category}
                   onChange={handleOnChange}
                   className="w-full border border-gray-300 rounded-md px-3 py-2 z-20"
                   required
-                />
+                /> */}
               </div>
               <div className="mb-4">
                 <label className="block text-gray-700 font-medium">
