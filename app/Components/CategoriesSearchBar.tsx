@@ -17,7 +17,6 @@ const CategoriesSearchBar = ({
   searchBarErrrmsg,
   isExpenseAdded,
   UpdatedCategoryEdit,
-  
 }: searchbarparams) => {
   const [categories, setCategories] = useState<string[]>([]);
   const [newCategory, setNewCategory] = useState("");
@@ -37,9 +36,11 @@ const CategoriesSearchBar = ({
     if (isExpenseAdded) {
       setExpAdded(isExpenseAdded);
     }
-    console.log(UpdatedCategoryEdit)
+    console.log(UpdatedCategoryEdit);
     if (UpdatedCategoryEdit) {
-      setNewCategory(UpdatedCategoryEdit)
+      setNewCategory(UpdatedCategoryEdit);
+      setSelectedCategory(UpdatedCategoryEdit);
+      setToSearch(false);
     }
   }, [error, isExpenseAdded, UpdatedCategoryEdit]);
 
@@ -129,7 +130,7 @@ const CategoriesSearchBar = ({
         type="text"
         id="searchInput"
         placeholder="Search Categories..."
-        className="w-full pl-10 px-4 py-3 border text-gray-400 bg-gray-700   border-orange-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
+        className="w-full pl-10 px-4 py-3 border-2 text-gray-400 bg-gray-700   border-orange-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 capitalize"
         value={newCategory}
         onChange={(e) => setNewCategory(e.target.value)}
         onKeyDown={(e) => handleKeyDown(e)}
@@ -137,11 +138,11 @@ const CategoriesSearchBar = ({
       />
       {newCategory && tosearch ? (
         <button
-          className={`flex absolute inset-0 left-[21rem] md:left-[19rem] items-center justify-center text-light hover:text-yellowgreen rounded-full ${
+          className={`flex absolute inset-0  md:left-[19rem] items-center justify-center text-light hover:text-yellowgreen rounded-full ${
             categories.length
               ? ""
-              : "transition-transform rotate-45  ease-in delay-500"
-          }  `}
+              : "transition-transform rotate-45 ease-in-out delay-600"
+          } ${UpdatedCategoryEdit ? "left-[18rem]" : "left-[21rem]"} `}
           onClick={
             categories.length ? () => setNewCategory("") : handleAddCategory
           }

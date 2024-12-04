@@ -85,7 +85,7 @@ export async function PUT(req: NextRequest) {
 
     await user.save();
 
-    NextResponse.json(
+    return NextResponse.json(
       { message: `Expense updated successfully: ${user} ` },
       { status: 201 }
     );

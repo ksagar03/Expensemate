@@ -34,9 +34,12 @@ const Page = () => {
       setIsExpenseAdded(false);
     }
   }, [isExpenseAdded]);
-  // useEffect(() => {
-  //   console.log("Updated form data:", formData);
-  // }, [formData]);
+
+  
+  useEffect(() => {
+    setFromData((prevData) => ({ ...prevData, category: searchedData }));
+  }, [searchedData]);
+
 
   const searchedCategory = (data: string) => {
     console.log("view all exp", data);
@@ -49,11 +52,26 @@ const Page = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsExpenseAdded(true);
-    setFromData((prevData) => ({ ...prevData, category: searchedData }));
     console.log("form submitted", formData);
+    const userID = session?.user._id ?? "";
+    if (formData.category && formData.amount_spent && userID && formData._id) {
+      try {
+        await updateExpenses({
+          userID: userID,
+          expenseID: formData._id,
+          category: formData.category,
+          amount_spent: formData.amount_spent,
+          description: formData.description,
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    } else {
+      setError("Please enter all the mandatory field ");
+    }
 
     setIsEdit(false);
   };
@@ -127,7 +145,7 @@ const Page = () => {
                   <DeleteOutlineIcon className=" cursor-pointer hover:text-red-600 " />
                 </span>
               </span>
-              <h1 className="text-lg font-medium text-gray-700">
+              <h1 className="text-lg font-medium text-gray-700 capitalize">
                 {expense.category}
               </h1>
               <p className="text-gray-500 text-sm">{expense.description}</p>
@@ -136,7 +154,7 @@ const Page = () => {
                   ₹{expense.amount_spent.toFixed(2)}
                 </span>
                 <span className="text-sm text-gray-400">
-                  {new Date(expense.timestamp).toLocaleDateString()}
+                  {new Date(expense.timestamp).toLocaleDateString("en-GB")}
                 </span>
               </div>
             </div>
@@ -157,7 +175,7 @@ const Page = () => {
               htmlFor="Category"
               className="block text-gray-700 font-medium"
             >
-              Category<span className="text-red-600">*</span>
+              Category <span className="text-red-600">*</span>
             </label>
             <CategoriesSearchBar
               UpdatedCategoryEdit={formData.category}
@@ -166,7 +184,7 @@ const Page = () => {
               isExpenseAdded={isExpenseAdded}
             />
             <form onSubmit={handleSubmit}>
-              <div className="mb-4">
+              <div className="mb-5">
                 {/* <input
                   type="text"
                   name="category"
@@ -178,14 +196,17 @@ const Page = () => {
               </div>
               <div className="mb-4">
                 <label className="block text-gray-700 font-medium">
-                  Amount Spent<span className="text-red-600">*</span>
+                  Amount Spent <span className="text-red-600">*</span>
+                </label>
+                <label className=" absolute text-xl z-10 px-4 py-3 font-semibold text-yellowgreen">
+                  ₹
                 </label>
                 <input
                   type="number"
                   name="amount_spent"
                   value={formData.amount_spent}
                   onChange={handleOnChange}
-                  className="w-full border border-gray-300 rounded-md px-3 py-2"
+                  className="w-full border-2 pl-10 text-gray-400 bg-gray-700   border-orange-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 px-4 py-3"
                   required
                 />
               </div>
@@ -197,7 +218,7 @@ const Page = () => {
                   name="description"
                   value={formData.description}
                   onChange={handleOnChange}
-                  className="w-full border border-gray-300 rounded-md px-3 py-2"
+                  className="w-full text-gray-400 bg-gray-700   border-orange-600 px-4 py-2 border-2  rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
                   rows={3}
                 />
               </div>
