@@ -11,7 +11,6 @@ import { updateExpenses, deleteExpense } from "@/app/lib/axios";
 import CategoriesSearchBar from "@/app/Components/CategoriesSearchBar";
 
 export interface ExpenseDataDef extends Expense {
-  timestamp: string;
   _id: string;
 }
 
@@ -21,6 +20,8 @@ const Page = () => {
   const [error, setError] = useState("");
   const [isEdit, setIsEdit] = useState(false);
   const { data: session, status } = useSession();
+  const userID = session?.user._id ?? "";
+  const [refreshRequired, SetRefreshRequired] = useState(false)
   const [formData, setFromData] = useState({
     category: "",
     amount_spent: 0,
@@ -39,6 +40,24 @@ const Page = () => {
   useEffect(() => {
     setFromData((prevData) => ({ ...prevData, category: searchedData }));
   }, [searchedData]);
+
+   // Only fetch data when the session is authenticated
+   useEffect(() => {
+    if (status === "authenticated") {
+      // const userID = session.user._id ?? "";
+      // console.log(userID);
+      const fetchData = async () => {
+        try {
+          const data = await fetchExpenses(userID);
+          // console.log("fetchedData", data.expenses);
+          setFetchedExp(data.expenses);
+        } catch (error) {
+          setError(`Error occurred while fetching the data: ${error}`);
+        }
+      };
+      fetchData();
+    }
+  }, [refreshRequired]);
 
 
   const searchedCategory = (data: string) => {
@@ -71,8 +90,9 @@ const Page = () => {
       }
     } else {
       setError("Please enter all the mandatory field ");
+      return
     }
-
+    SetRefreshRequired((!refreshRequired))
     setIsEdit(false);
   };
   const handleOnChange = (
@@ -82,23 +102,21 @@ const Page = () => {
     setFromData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Only fetch data when the session is authenticated
-  useEffect(() => {
-    if (status === "authenticated" && session?.user) {
-      const userID = session.user._id ?? "";
-      // console.log(userID);
-      const fetchData = async () => {
-        try {
-          const data = await fetchExpenses(userID);
-          // console.log("fetchedData", data.expenses);
-          setFetchedExp(data.expenses);
-        } catch (error) {
-          setError(`Error occurred while fetching the data: ${error}`);
-        }
-      };
-      fetchData();
+  const handleDelete = async (expenseID:string) => {
+    if(status == "authenticated" && userID && expenseID){
+      try{
+        await deleteExpense(userID, expenseID)
+
+      }catch(error){
+        console.error(error)
+      }
+    }else {
+      setError("unblae to delete the expenses")
     }
-  }, []);
+   SetRefreshRequired((!refreshRequired))
+  }
+
+ 
 
   // Show loading or error message while waiting for session data or fetching expenses
   if (status === "loading") {
@@ -141,7 +159,7 @@ const Page = () => {
                 >
                   <DriveFileRenameOutlineIcon className="cursor-pointer hover:text-blue-600" />
                 </span>
-                <span>
+                <span onClick={() => handleDelete(expense._id)}>
                   <DeleteOutlineIcon className=" cursor-pointer hover:text-red-600 " />
                 </span>
               </span>
@@ -154,7 +172,7 @@ const Page = () => {
                   ₹{expense.amount_spent.toFixed(2)}
                 </span>
                 <span className="text-sm text-gray-400">
-                  {new Date(expense.timestamp).toLocaleDateString("en-GB")}
+                  {expense.timestamp ? new Date(expense.timestamp).toLocaleDateString("en-GB") : ""}
                 </span>
               </div>
             </div>

@@ -82,6 +82,7 @@ export async function PUT(req: NextRequest) {
     expense.category = category || expense.category;
     expense.amount_spent = amount_spent || expense.amount_spent;
     expense.description = description || expense.description;
+    expense.timestamp = Date.now();
 
     await user.save();
 
@@ -108,7 +109,7 @@ export async function DELETE(req: NextRequest) {
     user.user_expenses.pull(expenseID);
     await user.save();
 
-    NextResponse.json(
+    return NextResponse.json(
       { message: `Expense deleted successfully: ${user} ` },
       { status: 201 }
     );

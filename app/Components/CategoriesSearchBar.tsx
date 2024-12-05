@@ -25,8 +25,15 @@ const CategoriesSearchBar = ({
   const [selectedCategory, setSelectedCategory] = useState("");
   const [activeIndex, setActiveIndex] = useState(0);
   const [isExpAdded, setExpAdded] = useState(false);
+  const [categoryEdit, setCategoryEdit] = useState("");
 
   const currentRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (UpdatedCategoryEdit) {
+      setCategoryEdit(UpdatedCategoryEdit);
+    }
+  }, [UpdatedCategoryEdit]);
 
   // isExpenseAdded is not changing to false
   useEffect(() => {
@@ -36,13 +43,12 @@ const CategoriesSearchBar = ({
     if (isExpenseAdded) {
       setExpAdded(isExpenseAdded);
     }
-    console.log(UpdatedCategoryEdit);
-    if (UpdatedCategoryEdit) {
-      setNewCategory(UpdatedCategoryEdit);
-      setSelectedCategory(UpdatedCategoryEdit);
+    if (categoryEdit) {
+      setNewCategory(categoryEdit);
+      setSelectedCategory(categoryEdit);
       setToSearch(false);
     }
-  }, [error, isExpenseAdded, UpdatedCategoryEdit]);
+  }, [error, isExpenseAdded, categoryEdit]);
 
   useEffect(() => {
     if (currentRef.current) {
@@ -52,6 +58,8 @@ const CategoriesSearchBar = ({
 
   useEffect(() => {
     if (selectedCategory !== newCategory) {
+      // console.log("ebtering into", categoryEdit == newCategory)
+      setCategoryEdit("");
       setToSearch(true);
       setActiveIndex(0);
     }
@@ -69,8 +77,10 @@ const CategoriesSearchBar = ({
       console.log("fetched : ", categories);
     } else {
       setCategories([]);
+      setSelectedCategory("");
+      currentCategory("");
     }
-  }, [newCategory]);
+  }, [newCategory, tosearch]);
 
   if (isExpAdded) {
     setNewCategory("");
@@ -135,6 +145,7 @@ const CategoriesSearchBar = ({
         onChange={(e) => setNewCategory(e.target.value)}
         onKeyDown={(e) => handleKeyDown(e)}
         autoComplete="off"
+        required
       />
       {newCategory && tosearch ? (
         <button
@@ -160,7 +171,7 @@ const CategoriesSearchBar = ({
                 setNewCategory(categories[index]);
                 setSelectedCategory(categories[activeIndex]);
                 currentCategory(categories[activeIndex]);
-                setToSearch(!tosearch);
+                setToSearch(false);
               }}
               key={index}
               className={`px-4 py-1 border border-gray-500 cursor-pointer ${

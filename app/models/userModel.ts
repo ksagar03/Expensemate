@@ -10,6 +10,7 @@ export interface Expense {
   category: string;
   amount_spent: number;
   description?: string;
+  timestamp?:number
 }
 
 export interface User_interface extends mongoose.Document {
