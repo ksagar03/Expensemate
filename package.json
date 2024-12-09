@@ -13,6 +13,7 @@
     "@emotion/styled": "^11.13.0",
     "@mui/icons-material": "^6.1.5",
     "@mui/material": "^6.1.4",
+    "@number-flow/react": "^0.4.2",
     "axios": "^1.7.7",
     "bcryptjs": "^2.4.3",
     "framer-motion": "^11.11.9",

@@ -63,7 +63,7 @@ type card = {
 
 export const Card = ({className, children}:card) => {
   return(
-    <motion.div className={`${className} ` }
+    <motion.div className={`${className}` }
     initial={{x: -200, opacity:0}}
     animate = {{x:0, opacity: 1, transition:{delay:0.2, ease: easeIn}}}
     >
