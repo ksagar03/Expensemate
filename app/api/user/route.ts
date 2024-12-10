@@ -1,6 +1,6 @@
 "use server";
 import { NextResponse } from "next/server";
-import User from "@/app/models/userModel";
+import User from "../../models/userModel";
 
 interface UserRequest {
   email: string;

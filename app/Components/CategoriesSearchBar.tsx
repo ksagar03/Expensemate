@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
 import React from "react";
-import { addCategory, fetchCategories } from "@/app/lib/axios";
+import { addCategory, fetchCategories } from "../lib/axios";
 import SearchIcon from "@mui/icons-material/Search";
 import CloseIcon from "@mui/icons-material/Close";
 
@@ -74,7 +74,7 @@ const CategoriesSearchBar = ({
         }
       };
       loadCategories();
-      console.log("fetched : ", categories);
+      // console.log("fetched : ", categories);
     } else {
       setCategories([]);
       setSelectedCategory("");

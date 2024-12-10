@@ -1,7 +1,5 @@
 "use client";
-import { Opacity } from "@mui/icons-material";
 import { easeIn, motion } from "framer-motion";
-import { ReactHTMLElement } from "react";
 
 interface heading {
     text: string

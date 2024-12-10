@@ -143,9 +143,8 @@
 
 "use server";
 import { NextResponse, NextRequest } from "next/server";
-import dbConnect from "@/app/lib/dbConnect";
-import Categories from "@/app/models/categoriesModel";
-import { Category } from "@mui/icons-material";
+import dbConnect from "../../lib/dbConnect";
+import Categories from "../../models/categoriesModel";
 
 let cachedCategories: string[] | null | undefined = undefined;
 
@@ -186,7 +185,7 @@ export async function POST(req: NextRequest) {
   try {
     await dbConnect();
     const body = await req.json();
-    console.log("req body:", body);
+    // console.log("req body:", body);
     const { newCategory } = body;
 
     if (!newCategory) {
@@ -196,17 +195,17 @@ export async function POST(req: NextRequest) {
       );
     }
     let categoryData = await Categories.findOne();
-    console.log(categoryData);
+    // console.log(categoryData);
 
     if (!categoryData) {
       categoryData = new Categories({ categories: [] });
-      console.log("new Category document ", categoryData);
+      // console.log("new Category document ", categoryData);
     }
 
     if (!categoryData.categories.includes(newCategory)) {
       categoryData.categories.push(newCategory);
       await categoryData.save();
-      console.log('Updated categories:', categoryData.categories);
+      // console.log('Updated categories:', categoryData.categories);
       cachedCategories = categoryData.categories;
     }
 

@@ -1,11 +1,8 @@
 import type { Metadata } from "next";
 
 import Footer from "../Components/Footer";
-import Head from "next/head";
-import Link from "next/link";
 import Header from "../Components/Header";
 import Provider from "@/context/Provider";
-import { Session } from "inspector";
 
 export const metadata: Metadata = {
   title: "Expense Tracker",

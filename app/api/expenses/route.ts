@@ -1,8 +1,8 @@
 "use server";
 
 import { NextRequest, NextResponse } from "next/server";
-import dbConnect from "@/app/lib/dbConnect";
-import User, { User_interface } from "@/app/models/userModel";
+import dbConnect from "../../lib/dbConnect";
+import User, { User_interface } from "../../models/userModel";
 
 export interface expenseData {
   userID: string;

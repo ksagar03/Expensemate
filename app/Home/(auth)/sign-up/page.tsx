@@ -1,11 +1,10 @@
 "use client";
-import Google_Svg from "@/public/SVGs/Google_Svg";
-import InputTag from "@/app/Components/InputTag";
+import Google_Svg from "../../../../public/SVGs/Google_Svg";
+import InputTag from "../../../Components/InputTag";
 import Link from "next/link";
 import CloseIcon from "@mui/icons-material/Close";
 import { useState } from "react";
-import User from "@/app/models/userModel";
-import dbConnect from "@/app/lib/dbConnect";
+import dbConnect from "../../../lib/dbConnect";
 import { hash } from "bcryptjs";
 import axios from "axios";
 import { useRouter } from "next/navigation";

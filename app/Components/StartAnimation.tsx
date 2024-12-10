@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 const Logo = () => {
   const router = useRouter()
   const handleVideoEnd = () => {
-    console.log("navigating to the Home page")
+    // console.log("navigating to the Home page")
     router?.replace("/Home")
   }
 
