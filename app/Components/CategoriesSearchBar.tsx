@@ -78,7 +78,6 @@ const CategoriesSearchBar = ({
     } else {
       setCategories([]);
       setSelectedCategory("");
-      currentCategory("");
     }
   }, [newCategory, tosearch]);
 

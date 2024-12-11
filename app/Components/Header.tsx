@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
 import { easeInOut, motion } from "framer-motion";
+import Link from "next/link";
 
 const Header = () => {
   const [loginorSignin, setLoginOrSignin] = useState("");
@@ -15,16 +16,20 @@ const Header = () => {
   // }
   const router = useRouter();
   const { data: session, status } = useSession();
-  console.log(session);
+  const userName = session?.user.name
+
   return (
     <>
       <div className=" flex justify-between items-center text-center p-3 mx-3 md:mx-1 md:text-sm">
+        <Link href={"/Home"}>
+       
         <Image
-          className=" w-[50px] h-auto sm:w-[30px] md:w-[40px] rounded-2xl -mt-1"
+          className=" w-[50px] h-auto sm:w-[30px] md:w-[40px] rounded-2xl -mt-1 shadow-lg shadow-gray-500"
           src={Logo}
           alt="Logo image"
         />
-        {!session ? (
+         </Link>
+        {status === "loading" ? "" :  status !== "authenticated" ? (
           <span className="flex gap-4 mx-4 md:mx-0">
             <button
               className=" font-semibold border-2 p-2 rounded-lg px-4 border-rose-600 hover:bg-black hover:text-light md:px-2 md:p-1 "
@@ -52,7 +57,7 @@ const Header = () => {
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.1 , ease: easeInOut }}
               >
-                {session?.user.name} ➜
+                {userName} ➜
               </motion.button>
             </h2>
             {dropDown ? (

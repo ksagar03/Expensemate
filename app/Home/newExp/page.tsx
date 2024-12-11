@@ -28,7 +28,7 @@ useEffect(()=>{
 
   const handleSearchBarerror = (searchbar_error: string) => {
     if(searchbar_error){
-      console.log("search bar error message: ", searchbar_error);
+      // console.log("search bar error message: ", searchbar_error);
       setError(searchbar_error)
     }
   }
@@ -48,12 +48,18 @@ useEffect(()=>{
   const handleOnclick = async () => {
     const userID = session?.user._id ?? "";
     if (userID && searchedData && amountSpent) {
-      await addExpenses({
-        userID: userID,
-        category: searchedData,
-        amount_spent: amountSpent,
-        description: description,
-      });
+      try{
+        await addExpenses({
+          userID: userID,
+          category: searchedData,
+          amount_spent: amountSpent,
+          description: description,
+        });
+        
+      }catch(error){
+        setError(`unable to add the expenses ${error}`)
+      }
+     
     } else {
       setError("Please enter all the fileds");
     }

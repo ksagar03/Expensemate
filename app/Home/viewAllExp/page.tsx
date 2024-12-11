@@ -9,6 +9,7 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import React from "react";
 import { updateExpenses, deleteExpense } from "@/app/lib/axios";
 import CategoriesSearchBar from "@/app/Components/CategoriesSearchBar";
+import Link from "next/link";
 
 export interface ExpenseDataDef extends Expense {
   _id: string;
@@ -177,6 +178,7 @@ const Page = () => {
               </div>
             </div>
           ))}
+          <span   className=" flex justify-center mt-6 -mb-8 underline underline-offset-1 "><Link href={"newExp"} className=" font-semibold hover:text-blue-500"> Want to add new expense?</Link></span>
         </div>
         {/* <UpdateExpenses/> */}
       </div>
@@ -203,14 +205,6 @@ const Page = () => {
             />
             <form onSubmit={handleSubmit}>
               <div className="mb-5">
-                {/* <input
-                  type="text"
-                  name="category"
-                  value={formData.category}
-                  onChange={handleOnChange}
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 z-20"
-                  required
-                /> */}
               </div>
               <div className="mb-4">
                 <label className="block text-gray-700 font-medium">
@@ -257,6 +251,7 @@ const Page = () => {
               </div>
             </form>
           </motion.div>
+          
         </div>
       )}
     </>
