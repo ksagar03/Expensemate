@@ -13,6 +13,7 @@ import { ExpenseDataDef } from "./viewAllExp/page";
 
 const Home = () => {
   const [fetchedExp, setFetchedExp] = useState<number[]>([]);
+  const [fetchedData, setFetchedData] = useState<ExpenseDataDef[]>([])
   const [currentVal, setCurrentVal] = useState(0);
   const { data: session, status } = useSession();
   const [error, setError] = useState("");
@@ -23,6 +24,7 @@ const Home = () => {
         try {
           const data = await fetchExpenses(userID);
           // console.log("fetchedData", data.expenses);
+          setFetchedData(data.expenses)
           const amount_spentData = data.expenses.map(
             (expense: ExpenseDataDef) => expense.amount_spent
           );
@@ -48,7 +50,7 @@ const Home = () => {
       const step = totalExpenses / 10;
       const intervalId = setInterval(() => {
         tempVal += step;
-        setCurrentVal(Math.min(tempVal, totalExpenses)); // Ensure we don't exceed totalExpenses
+        setCurrentVal(Math.min(tempVal, totalExpenses));
         if (tempVal >= totalExpenses) {
           clearInterval(intervalId);
         }
@@ -64,7 +66,7 @@ const Home = () => {
         <div className="">
           <Heading text="Track your daily expenses" className=" m-12" />
           <Card
-            className=" block max-w-[28rem] ml-10 h-28 text-center items-center p-6 bg-gradient-to-r from-yellow-400 to-violet-500 border-2 border-dark rounded-xl 
+            className=" block max-w-[28rem] ml-10 h-28 mb-14 text-center items-center p-6 bg-gradient-to-r from-yellow-400 to-violet-500 border-2 border-dark rounded-xl 
   sm:max-w-full sm:h-auto sm:p-4 sm:m-5 sm:text-center bg-[length:200%_200%] animate-gradient shadow-lg shadow-gray-600"
           >
             <div>
@@ -84,8 +86,8 @@ const Home = () => {
               />
             </div>
           </Card>
-          <Graph />
-          <div className="flex flex-wrap justify-evenly gap-6 border-2 border-gray-500 mx-10 p-10 rounded-xl m-10 md:flex-col">
+          <Graph data={fetchedData}/>
+          <div className="flex flex-wrap justify-evenly gap-6 border-2 shadow-xl shadow-slate-300 ml-6 p-10 rounded-xl m-10 md:flex-col">
             <Link href={"/Home/newExp"}>
               <Card className="text-lg sm:text-base font-medium min-w-[26rem] items-center sm:min-w-[15rem] md:min-w-[24rem] min-h-28 h-auto bg-gradient-to-r p-6 from-yellow-400 to-violet-500 border-2 border-dark rounded-xl hover:bg-[length:200%_200%] hover:animate-gradient hover:shadow-current hover:shadow-md shadow-lg shadow-gray-600 ">
                 Add New expenses <AddCircleOutlineIcon />
