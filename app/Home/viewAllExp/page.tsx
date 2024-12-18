@@ -2,7 +2,7 @@
 import { fetchExpenses } from "@/app/lib/axios";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
-import { motion } from "framer-motion";
+import { easeInOut, motion } from "framer-motion";
 import { Expense } from "@/app/models/userModel";
 import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutline";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
@@ -140,7 +140,12 @@ const Page = () => {
         {/* Grid layout for expenses */}
         <div className="grid grid-cols-1 gap-6">
           {fetchedExp.map((expense) => (
-            <div
+            <motion.div
+            initial = {{y:-50}}
+            animate={{
+              y:0,
+              transition:{delay:0.1, ease: easeInOut}
+            }}
               key={expense._id}
               className="bg-white p-5  relative rounded-lg shadow-lg border border-gray-200 hover:shadow-xl transition-shadow duration-300 ease-in-out"
             >
@@ -176,7 +181,7 @@ const Page = () => {
                   {expense.timestamp ? new Date(expense.timestamp).toLocaleDateString("en-GB") : ""}
                 </span>
               </div>
-            </div>
+            </motion.div>
           ))}
           <span   className=" flex justify-center mt-6 -mb-8 underline underline-offset-1 "><Link href={"newExp"} className=" font-semibold hover:text-blue-500"> Want to add new expense?</Link></span>
         </div>
@@ -188,7 +193,7 @@ const Page = () => {
             initial={{ opacity: 0, x: -50, y: -50 }}
             animate={{ opacity: 1, x: 0, y: 0 }}
             exit={{ opacity: 0, x: 50, y: 50 }}
-            className="bg-light rounded-lg shadow-lg w-96 p-6"
+            className="bg-light rounded-lg shadow-lg w-96 md:w-[21rem] p-6"
           >
             <h2 className="text-xl font-bold mb-4"> Edit Expense</h2>
             <label
@@ -234,7 +239,7 @@ const Page = () => {
                   rows={3}
                 />
               </div>
-              <div className="flex justify-end gap-2">
+              <div className="flex justify-end md:justify-center gap-2">
                 <button
                   type="submit"
                   className="px-4 py-2 bg-blue-600 text-light rounded-md"
