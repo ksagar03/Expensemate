@@ -29,7 +29,8 @@ export const addExpenses = async ({
       amount_spent,
       description,
     });
-    console.log(response.data);
+    // console.log(response.data);
+    return response.data
   } catch (error) {
     console.error("error while adding the expenses", error);
   }
@@ -64,7 +65,7 @@ export const updateExpenses = async ({
       amount_spent,
       description,
     });
-    console.log(response.data);
+    return response.data;
   } catch (error) {
     console.error("error in updating", error);
   }
@@ -76,7 +77,8 @@ export const deleteExpense = async (userID: string, expenseID: string) => {
     const response = await axios.delete("/api/expenses", {
       data: { userID, expenseID },
     });
-    console.log("expense delete", response.data);
+    return response.data
+    // console.log("expense delete", response.data);
   } catch (error) {
     console.error("error in deleting", error);
   }

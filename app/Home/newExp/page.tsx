@@ -6,14 +6,15 @@ import { motion } from "framer-motion";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import CategoriesSearchBar from "@/app/Components/CategoriesSearchBar";
+import { useNotification } from "@/context/NotificationContext";
 
 const page = () => {
   const [searchedData, setSearchedData] = useState("");
   const [error, setError] = useState<string | null>(null);
-  // const [amount, setAmount] = useState("");
   const [amountSpent, setAmountSpent] = useState<number>();
   const [description, setDescription] = useState("");
   const [isExpenseAdded, setIsExpenseAdded] = useState(false)
+  const {showNotification} = useNotification()
 
 useEffect(()=>{
   if(isExpenseAdded){
@@ -49,12 +50,14 @@ useEffect(()=>{
     const userID = session?.user._id ?? "";
     if (userID && searchedData && amountSpent) {
       try{
-        await addExpenses({
+        const result = await addExpenses({
           userID: userID,
           category: searchedData,
           amount_spent: amountSpent,
           description: description,
         });
+      
+        showNotification(result.message)
         
       }catch(error){
         setError(`unable to add the expenses ${error}`)

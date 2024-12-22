@@ -10,6 +10,7 @@ import React from "react";
 import { updateExpenses, deleteExpense } from "@/app/lib/axios";
 import CategoriesSearchBar from "@/app/Components/CategoriesSearchBar";
 import Link from "next/link";
+import { useNotification } from "@/context/NotificationContext";
 
 export interface ExpenseDataDef extends Expense {
   _id: string;
@@ -22,7 +23,7 @@ const Page = () => {
   const [isEdit, setIsEdit] = useState(false);
   const { data: session, status } = useSession();
   const userID = session?.user._id ?? "";
-  const [refreshRequired, SetRefreshRequired] = useState(false)
+  const [refreshRequired, SetRefreshRequired] = useState(false);
   const [formData, setFromData] = useState({
     category: "",
     amount_spent: 0,
@@ -30,6 +31,7 @@ const Page = () => {
     _id: "",
   });
   const [isExpenseAdded, setIsExpenseAdded] = useState(false);
+  const { showNotification } = useNotification();
 
   useEffect(() => {
     if (isExpenseAdded) {
@@ -37,13 +39,12 @@ const Page = () => {
     }
   }, [isExpenseAdded]);
 
-  
   useEffect(() => {
     setFromData((prevData) => ({ ...prevData, category: searchedData }));
   }, [searchedData]);
 
-   // Only fetch data when the session is authenticated
-   useEffect(() => {
+  // Only fetch data when the session is authenticated
+  useEffect(() => {
     if (status === "authenticated") {
       // const userID = session.user._id ?? "";
       // console.log(userID);
@@ -59,7 +60,6 @@ const Page = () => {
       fetchData();
     }
   }, [refreshRequired]);
-
 
   const searchedCategory = (data: string) => {
     console.log("view all exp", data);
@@ -79,21 +79,22 @@ const Page = () => {
     const userID = session?.user._id ?? "";
     if (formData.category && formData.amount_spent && userID && formData._id) {
       try {
-        await updateExpenses({
+        const result = await updateExpenses({
           userID: userID,
           expenseID: formData._id,
           category: formData.category,
           amount_spent: formData.amount_spent,
           description: formData.description,
         });
+        showNotification(result.message);
       } catch (error) {
         console.error(error);
       }
     } else {
       setError("Please enter all the mandatory field ");
-      return
+      return;
     }
-    SetRefreshRequired((!refreshRequired))
+    SetRefreshRequired(!refreshRequired);
     setIsEdit(false);
   };
   const handleOnChange = (
@@ -103,21 +104,19 @@ const Page = () => {
     setFromData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleDelete = async (expenseID:string) => {
-    if(status == "authenticated" && userID && expenseID){
-      try{
-        await deleteExpense(userID, expenseID)
-
-      }catch(error){
-        console.error(error)
+  const handleDelete = async (expenseID: string) => {
+    if (status == "authenticated" && userID && expenseID) {
+      try {
+        const result = await deleteExpense(userID, expenseID);
+        showNotification(result.message);
+      } catch (error) {
+        console.error(error);
       }
-    }else {
-      setError("unblae to delete the expenses")
+    } else {
+      setError("unblae to delete the expenses");
     }
-   SetRefreshRequired((!refreshRequired))
-  }
-
- 
+    SetRefreshRequired(!refreshRequired);
+  };
 
   // Show loading or error message while waiting for session data or fetching expenses
   if (status === "loading") {
@@ -141,11 +140,11 @@ const Page = () => {
         <div className="grid grid-cols-1 gap-6">
           {fetchedExp.map((expense) => (
             <motion.div
-            initial = {{y:-50}}
-            animate={{
-              y:0,
-              transition:{delay:0.1, ease: easeInOut}
-            }}
+              initial={{ y: -50 }}
+              animate={{
+                y: 0,
+                transition: { delay: 0.1, ease: easeInOut },
+              }}
               key={expense._id}
               className="bg-white p-5  relative rounded-lg shadow-lg border border-gray-200 hover:shadow-xl transition-shadow duration-300 ease-in-out"
             >
@@ -178,12 +177,22 @@ const Page = () => {
                   ₹{expense.amount_spent.toFixed(2)}
                 </span>
                 <span className="text-sm text-gray-400">
-                  {expense.timestamp ? new Date(expense.timestamp).toLocaleDateString("en-GB") : ""}
+                  {expense.timestamp
+                    ? new Date(expense.timestamp).toLocaleDateString("en-GB")
+                    : ""}
                 </span>
               </div>
             </motion.div>
           ))}
-          <span   className=" flex justify-center mt-6 -mb-8 underline underline-offset-1 "><Link href={"newExp"} className=" font-semibold hover:text-blue-500"> Want to add new expense?</Link></span>
+          <span className=" flex justify-center mt-6 -mb-8 underline underline-offset-1 ">
+            <Link
+              href={"newExp"}
+              className=" font-semibold hover:text-blue-500"
+            >
+              {" "}
+              Want to add new expense?
+            </Link>
+          </span>
         </div>
         {/* <UpdateExpenses/> */}
       </div>
@@ -209,8 +218,7 @@ const Page = () => {
               isExpenseAdded={isExpenseAdded}
             />
             <form onSubmit={handleSubmit}>
-              <div className="mb-5">
-              </div>
+              <div className="mb-5"></div>
               <div className="mb-4">
                 <label className="block text-gray-700 font-medium">
                   Amount Spent <span className="text-red-600">*</span>
@@ -256,7 +264,6 @@ const Page = () => {
               </div>
             </form>
           </motion.div>
-          
         </div>
       )}
     </>

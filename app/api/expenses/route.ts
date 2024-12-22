@@ -87,7 +87,7 @@ export async function PUT(req: NextRequest) {
     await user.save();
 
     return NextResponse.json(
-      { message: `Expense updated successfully: ${user} ` },
+      { message: "Expense updated successfully" },
       { status: 201 }
     );
   } catch (error) {
@@ -110,7 +110,7 @@ export async function DELETE(req: NextRequest) {
     await user.save();
 
     return NextResponse.json(
-      { message: `Expense deleted successfully: ${user} ` },
+      { message: "Expense deleted successfully" },
       { status: 201 }
     );
   } catch (error) {
