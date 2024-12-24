@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Footer from "./Components/Footer";
-
 
 export const metadata: Metadata = {
   title: "Expense Tracker",
@@ -22,8 +20,7 @@ export default function RootLayout({
         />
         <link className="rounded-full" rel="icon" href="/favicon.ico" />
       </head>
-
-      <body>{children}</body>
+      <body className="bg-light w-full">{children}</body>
     </html>
   );
 }

@@ -3,7 +3,6 @@ import type { Metadata } from "next";
 import Footer from "../Components/Footer";
 import Header from "../Components/Header";
 import Provider from "@/context/Provider";
-import { NotificationProvider } from "@/context/NotificationContext";
 
 export const metadata: Metadata = {
   title: "Expense Tracker",
@@ -12,9 +11,9 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   return (
     <html lang="en">
       <head>
@@ -25,9 +24,10 @@ export default function RootLayout({
         <link className="rounded-full" rel="icon" href="/favicon.ico" />
       </head>
       <Provider>
-        <body className=" bg-light w-full">
+        <body>
           <Header />
-          <NotificationProvider>{children}</NotificationProvider>
+          <main>{children}</main>
+
           <Footer />
         </body>
       </Provider>

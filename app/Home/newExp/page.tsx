@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import CategoriesSearchBar from "@/app/Components/CategoriesSearchBar";
-import { useNotification } from "@/context/NotificationContext";
+import PopupNotification from "@/app/Components/PopupNotification";
 
 const page = () => {
   const [searchedData, setSearchedData] = useState("");
@@ -14,7 +14,9 @@ const page = () => {
   const [amountSpent, setAmountSpent] = useState<number>();
   const [description, setDescription] = useState("");
   const [isExpenseAdded, setIsExpenseAdded] = useState(false)
-  const {showNotification} = useNotification()
+   const [renderMessage , setRenderMessage] = useState("")
+   const [key, setKey] = useState(0)
+ 
 
 useEffect(()=>{
   if(isExpenseAdded){
@@ -56,8 +58,8 @@ useEffect(()=>{
           amount_spent: amountSpent,
           description: description,
         });
-      
-        showNotification(result.message)
+        setRenderMessage(result.message)
+        setKey(prevKey => prevKey + 1)
         
       }catch(error){
         setError(`unable to add the expenses ${error}`)
@@ -144,6 +146,7 @@ useEffect(()=>{
           SignUp or LogIn to add expenses—your wallet will thank you!😅😅
         </p>
       )}
+      <PopupNotification key={key} showMessage={renderMessage} />
     </div>
   );
 };

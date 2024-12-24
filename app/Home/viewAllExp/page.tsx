@@ -10,7 +10,7 @@ import React from "react";
 import { updateExpenses, deleteExpense } from "@/app/lib/axios";
 import CategoriesSearchBar from "@/app/Components/CategoriesSearchBar";
 import Link from "next/link";
-import { useNotification } from "@/context/NotificationContext";
+import PopupNotification from "@/app/Components/PopupNotification";
 
 export interface ExpenseDataDef extends Expense {
   _id: string;
@@ -31,7 +31,9 @@ const Page = () => {
     _id: "",
   });
   const [isExpenseAdded, setIsExpenseAdded] = useState(false);
-  const { showNotification } = useNotification();
+
+   const [renderMessage , setRenderMessage] = useState("")
+   const [key, setKey] = useState(0)
 
   useEffect(() => {
     if (isExpenseAdded) {
@@ -86,7 +88,8 @@ const Page = () => {
           amount_spent: formData.amount_spent,
           description: formData.description,
         });
-        showNotification(result.message);
+        setRenderMessage(result.message)
+        setKey(prevkey => prevkey + 1)
       } catch (error) {
         console.error(error);
       }
@@ -108,7 +111,9 @@ const Page = () => {
     if (status == "authenticated" && userID && expenseID) {
       try {
         const result = await deleteExpense(userID, expenseID);
-        showNotification(result.message);
+        setRenderMessage(result.message)
+        setKey(prevkey => prevkey + 1)
+        
       } catch (error) {
         console.error(error);
       }
@@ -266,6 +271,7 @@ const Page = () => {
           </motion.div>
         </div>
       )}
+      <PopupNotification key={key} showMessage={renderMessage}  />
     </>
   );
 };
