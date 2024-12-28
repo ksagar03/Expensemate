@@ -32,8 +32,8 @@ const Page = () => {
   });
   const [isExpenseAdded, setIsExpenseAdded] = useState(false);
 
-   const [renderMessage , setRenderMessage] = useState("")
-   const [key, setKey] = useState(0)
+  const [renderMessage, setRenderMessage] = useState("");
+  const [key, setKey] = useState(0);
 
   useEffect(() => {
     if (isExpenseAdded) {
@@ -88,8 +88,8 @@ const Page = () => {
           amount_spent: formData.amount_spent,
           description: formData.description,
         });
-        setRenderMessage(result.message)
-        setKey(prevkey => prevkey + 1)
+        setRenderMessage(result.message);
+        setKey((prevkey) => prevkey + 1);
       } catch (error) {
         console.error(error);
       }
@@ -111,9 +111,8 @@ const Page = () => {
     if (status == "authenticated" && userID && expenseID) {
       try {
         const result = await deleteExpense(userID, expenseID);
-        setRenderMessage(result.message)
-        setKey(prevkey => prevkey + 1)
-        
+        setRenderMessage(result.message);
+        setKey((prevkey) => prevkey + 1);
       } catch (error) {
         console.error(error);
       }
@@ -143,13 +142,18 @@ const Page = () => {
 
         {/* Grid layout for expenses */}
         <div className="grid grid-cols-1 gap-6">
-          {fetchedExp.map((expense) => (
+          {fetchedExp.map((expense, index) => (
             <motion.div
               initial={{ y: -50 }}
               animate={{
                 y: 0,
-                transition: { delay: 0.1, ease: easeInOut },
+                transition: {
+                  delay: 0.1 * index,
+                  ease: easeInOut,
+                  duration: 0.5,
+                },
               }}
+              exit={{ opacity: 0, y: 50 }}
               key={expense._id}
               className="bg-white p-5  relative rounded-lg shadow-lg border border-gray-200 hover:shadow-xl transition-shadow duration-300 ease-in-out"
             >
@@ -271,7 +275,7 @@ const Page = () => {
           </motion.div>
         </div>
       )}
-      <PopupNotification key={key} showMessage={renderMessage}  />
+      <PopupNotification key={key} showMessage={renderMessage} />
     </>
   );
 };

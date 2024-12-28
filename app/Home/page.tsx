@@ -1,7 +1,10 @@
 "use client";
 import React from "react";
 import { Heading, Card } from "../Components/motion_components/motionTags";
-import Graph from "../Components/Graph";
+import { Skeleton } from "@mui/material";
+
+
+// import Graph from "../Components/Graph";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import Link from "next/link";
 import NumberFlow from "@number-flow/react";
@@ -9,6 +12,7 @@ import { useSession } from "next-auth/react";
 import { fetchExpenses } from "../lib/axios";
 import { useState, useEffect } from "react";
 import { ExpenseDataDef } from "./viewAllExp/page";
+const Graph = React.lazy(()=> import("../Components/Graph"))
 
 const Home = () => {
   const [fetchedExp, setFetchedExp] = useState<number[]>([]);
@@ -85,9 +89,18 @@ const Home = () => {
               />
             </div>
           </Card>
-          <React.Suspense fallback={<div>Loading graph....</div>}>
+          <div className="">
+            <React.Suspense fallback = {<div>
+              <Skeleton className=" m-10 ml-6 p-5  border-2 rounded-xl shadow-slate-300 shadow-xl" animation="wave" variant="rectangular" height={400} />
+            </div>}>
+            <Graph data={fetchedData} />
+
+            </React.Suspense>
+
+          </div>
+          {/* <React.Suspense fallback={<div>Loading graph....</div>}>
           <Graph data={fetchedData}/>
-          </React.Suspense>
+          </React.Suspense> */}
          
           <div className="flex flex-wrap justify-evenly gap-6 border-2 shadow-xl shadow-slate-300 ml-6 p-10 rounded-xl m-10 md:flex-col">
             <Link href={"/Home/newExp"}>

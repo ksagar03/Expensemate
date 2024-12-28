@@ -1,14 +1,25 @@
 "use client";
 import React from "react";
 import { format } from "date-fns";
-import { AreaChart, Area, XAxis, YAxis, Legend, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  Legend,
+  Tooltip,
+  ResponsiveContainer,
+  CartesianGrid,
+} from "recharts";
 import { ExpenseDataDef } from "../Home/viewAllExp/page";
+import { Skeleton } from "@mui/material";
 
 interface Graphprops {
   data: ExpenseDataDef[];
 }
 
 const Graph = React.memo(({ data }: Graphprops) => {
+
   const updatedData = data.map((e) => {
     return {
       ...e,
