@@ -9,7 +9,7 @@ import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import Link from "next/link";
 import NumberFlow from "@number-flow/react";
 import { useSession } from "next-auth/react";
-import { fetchExpenses } from "../lib/axios";
+import { debounce, fetchExpenses } from "../lib/axios";
 import { useState, useEffect } from "react";
 import { ExpenseDataDef } from "./viewAllExp/page";
 const Graph = React.lazy(()=> import("../Components/Graph"))
@@ -38,7 +38,8 @@ const Home = () => {
           setError(`Error occurred while fetching the data: ${error}`);
         }
       };
-      fetchData();
+      const debounceFunction = debounce(fetchData, 1000)
+      debounceFunction()
     }
   }, [status, userID]);
 
@@ -89,15 +90,16 @@ const Home = () => {
               />
             </div>
           </Card>
-          <div className="">
+          <Graph data={fetchedData} />
+          {/* <div className="">
             <React.Suspense fallback = {<div>
               <Skeleton className=" m-10 ml-6 p-5  border-2 rounded-xl shadow-slate-300 shadow-xl" animation="wave" variant="rectangular" height={400} />
             </div>}>
-            <Graph data={fetchedData} />
+            
 
             </React.Suspense>
 
-          </div>
+          </div> */}
           {/* <React.Suspense fallback={<div>Loading graph....</div>}>
           <Graph data={fetchedData}/>
           </React.Suspense> */}

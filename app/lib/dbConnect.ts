@@ -25,7 +25,7 @@ async function dbConnect(): Promise<void> {
     ); // in the {} we can pass so many properties
     connection.isConnected = db.connections[0].readyState;
 
-    console.log("connected to the DB", db);
+    console.log("connected to the DB");
   } catch (error) {
     console.log("connection failed", error);
     process.exit(500);

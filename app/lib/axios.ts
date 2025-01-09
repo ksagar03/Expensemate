@@ -1,6 +1,18 @@
 import axios from "axios";
 import { expenseData, expenseIdData } from "../api/expenses/route";
 
+
+export const debounce =  (callback:()=> void | Promise<void> , delay:number) => {
+  let timeout: NodeJS.Timeout | number;
+
+
+  return () => {
+    clearTimeout(timeout);
+    timeout = setTimeout(callback, delay)
+  }
+
+}
+
 export const fetchCategories = async (
   searchQuery: string
 ): Promise<string[]> => {
