@@ -28,8 +28,10 @@ export async function POST(req: NextRequest) {
     user.user_expenses.push({ category, amount_spent, description });
     await user.save();
 
+    const LastExpID = user.user_expenses[user.user_expenses.length - 1]._id
+    // console.log("last exp: ",LastExpID)
     return NextResponse.json(
-      { message: "Expense added successfully" },
+      { message: "Expense added successfully", LastExpID: LastExpID  },
       { status: 201 }
     );
   } catch (error) {

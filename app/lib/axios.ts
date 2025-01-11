@@ -3,8 +3,8 @@ import { expenseData, expenseIdData } from "../api/expenses/route";
 
 
 export const debounce =  (callback:()=> void | Promise<void> , delay:number) => {
-  let timeout: NodeJS.Timeout | number;
-
+  // let timeout: NodeJS.Timeout | number;
+  let timeout: ReturnType<typeof setTimeout>;
 
   return () => {
     clearTimeout(timeout);
@@ -54,7 +54,7 @@ export const fetchExpenses = async (userID: string) => {
     const response = await axios.get("/api/expenses", {
       params: { userID: userID },
     });
-    console.log("User expenses", response.data);
+    // console.log("User expenses", response.data);
     return response.data;
   } catch (error) {
     console.error("error in fetching expenses", error);

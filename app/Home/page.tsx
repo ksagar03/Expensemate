@@ -1,8 +1,6 @@
 "use client";
 import React from "react";
 import { Heading, Card } from "../Components/motion_components/motionTags";
-import { Skeleton } from "@mui/material";
-
 
 // import Graph from "../Components/Graph";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
@@ -12,11 +10,11 @@ import { useSession } from "next-auth/react";
 import { debounce, fetchExpenses } from "../lib/axios";
 import { useState, useEffect } from "react";
 import { ExpenseDataDef } from "./viewAllExp/page";
-const Graph = React.lazy(()=> import("../Components/Graph"))
+const Graph = React.lazy(() => import("../Components/Graph"));
 
 const Home = () => {
   const [fetchedExp, setFetchedExp] = useState<number[]>([]);
-  const [fetchedData, setFetchedData] = useState<ExpenseDataDef[]>([])
+  const [fetchedData, setFetchedData] = useState<ExpenseDataDef[]>([]);
   const [currentVal, setCurrentVal] = useState(0);
   const { data: session, status } = useSession();
   const [error, setError] = useState("");
@@ -25,21 +23,33 @@ const Home = () => {
     if (status === "authenticated") {
       const fetchData = async () => {
         try {
-          const data = await fetchExpenses(userID);
-          // console.log("fetchedData", data.expenses);
-          setFetchedData(data.expenses)
-          const amount_spentData = data.expenses.map(
-            (expense: ExpenseDataDef) => expense.amount_spent
-          );
-          setFetchedExp(amount_spentData);
+          let catchedData = sessionStorage.getItem(`expenses-${userID}`);
+
+          if (catchedData) {
+            let data = JSON.parse(catchedData);
+            setFetchedData(data);
+            const amount_spentData = data.map(
+              (expense: ExpenseDataDef) => expense.amount_spent
+            );
+            setFetchedExp(amount_spentData);
+          } else {
+            const data = await fetchExpenses(userID);
+            // console.log("fetchedData", data.expenses);
+            setFetchedData(data.expenses);
+            const amount_spentData = data.expenses.map(
+              (expense: ExpenseDataDef) => expense.amount_spent
+            );
+            setFetchedExp(amount_spentData);
+            sessionStorage.setItem(`expenses-${userID}`, JSON.stringify(data));
+          }
           //  const calculatedTotalSum = amount_spentData.reduce((acc:number, currentValue:number) => acc + currentValue, 0)
           // console.log(calculatedTotalSum)
         } catch (error) {
           setError(`Error occurred while fetching the data: ${error}`);
         }
       };
-      const debounceFunction = debounce(fetchData, 1000)
-      debounceFunction()
+      const debounceFunction = debounce(fetchData, 1000);
+      debounceFunction();
     }
   }, [status, userID]);
 
@@ -67,31 +77,35 @@ const Home = () => {
   return (
     <>
       {status === "authenticated" ? (
-        <div className="">
-          <Heading text="Track your daily expenses" className="mt-12 p-6 mb-8" />
-          <Card
-            className=" block max-w-[28rem] ml-10 h-28 mb-14 text-center items-center p-6 bg-gradient-to-r from-yellow-400 to-violet-500 border-2 border-dark rounded-xl 
+        !error ? (
+          <div className="">
+            <Heading
+              text="Track your daily expenses"
+              className="mt-12 p-6 mb-8"
+            />
+            <Card
+              className=" block max-w-[28rem] ml-10 h-28 mb-14 text-center items-center p-6 bg-gradient-to-r from-yellow-400 to-violet-500 border-2 border-dark rounded-xl 
   sm:max-w-full sm:h-auto sm:p-4 sm:m-5 sm:text-center bg-[length:200%_200%] animate-gradient shadow-lg shadow-gray-600"
-          >
-            <div>
-              {/* <h1 className=" text-xl font-medium">
+            >
+              <div>
+                {/* <h1 className=" text-xl font-medium">
             Total expenses : {Formater("1234732.21")}
           </h1> */}
-              <NumberFlow
-                key={currentVal}
-                className=" font-bold text-2xl"
-                value={currentVal}
-                format={{
-                  style: "currency",
-                  currency: "INR",
-                  trailingZeroDisplay: "stripIfInteger",
-                }}
-                prefix="Total expenses : "
-              />
-            </div>
-          </Card>
-          <Graph data={fetchedData} />
-          {/* <div className="">
+                <NumberFlow
+                  key={currentVal}
+                  className=" font-bold text-2xl"
+                  value={currentVal}
+                  format={{
+                    style: "currency",
+                    currency: "INR",
+                    trailingZeroDisplay: "stripIfInteger",
+                  }}
+                  prefix="Total expenses : "
+                />
+              </div>
+            </Card>
+            <Graph data={fetchedData} />
+            {/* <div className="">
             <React.Suspense fallback = {<div>
               <Skeleton className=" m-10 ml-6 p-5  border-2 rounded-xl shadow-slate-300 shadow-xl" animation="wave" variant="rectangular" height={400} />
             </div>}>
@@ -100,23 +114,26 @@ const Home = () => {
             </React.Suspense>
 
           </div> */}
-          {/* <React.Suspense fallback={<div>Loading graph....</div>}>
+            {/* <React.Suspense fallback={<div>Loading graph....</div>}>
           <Graph data={fetchedData}/>
           </React.Suspense> */}
-         
-          <div className="flex flex-wrap justify-evenly gap-6 border-2 shadow-xl shadow-slate-300 ml-6 p-10 rounded-xl m-10 md:flex-col">
-            <Link href={"/Home/newExp"}>
-              <Card className="text-lg sm:text-base font-medium min-w-[26rem] items-center sm:min-w-[15rem] md:min-w-[24rem] min-h-28 h-auto bg-gradient-to-r p-6 from-yellow-400 to-violet-500 border-2 border-dark rounded-xl hover:bg-[length:200%_200%] hover:animate-gradient hover:shadow-current hover:shadow-md shadow-lg shadow-gray-600 ">
-                Add New expenses <AddCircleOutlineIcon />
-              </Card>
-            </Link>
-            <Link href={"/Home/viewAllExp"}>
-              <Card className="text-lg sm:text-base font-medium min-w-[26rem] items-center sm:min-w-[15rem] md:min-w-[24rem] min-h-28 h-auto bg-gradient-to-r p-6 from-yellow-400 to-violet-500 border-2 border-dark rounded-xl hover:bg-[length:200%_200%] hover:animate-gradient hover:shadow-current hover:shadow-md shadow-lg shadow-gray-600">
-                View your expense
-              </Card>
-            </Link>
+
+            <div className="flex flex-wrap justify-evenly gap-6 border-2 shadow-xl shadow-slate-300 ml-6 p-10 rounded-xl m-10 md:flex-col">
+              <Link href={"/Home/newExp"}>
+                <Card className="text-lg sm:text-base font-medium min-w-[26rem] items-center sm:min-w-[15rem] md:min-w-[24rem] min-h-28 h-auto bg-gradient-to-r p-6 from-yellow-400 to-violet-500 border-2 border-dark rounded-xl hover:bg-[length:200%_200%] hover:animate-gradient hover:shadow-current hover:shadow-md shadow-lg shadow-gray-600 ">
+                  Add New expenses <AddCircleOutlineIcon />
+                </Card>
+              </Link>
+              <Link href={"/Home/viewAllExp"}>
+                <Card className="text-lg sm:text-base font-medium min-w-[26rem] items-center sm:min-w-[15rem] md:min-w-[24rem] min-h-28 h-auto bg-gradient-to-r p-6 from-yellow-400 to-violet-500 border-2 border-dark rounded-xl hover:bg-[length:200%_200%] hover:animate-gradient hover:shadow-current hover:shadow-md shadow-lg shadow-gray-600">
+                  View your expense
+                </Card>
+              </Link>
+            </div>
           </div>
-        </div>
+        ) : (
+          <p className=" text-2xl text-center text-red-500">{error}</p>
+        )
       ) : (
         <span className="min-h-screen flex justify-center items-center  text-center text-2xl font-semibold">
           {status === "loading" ? (

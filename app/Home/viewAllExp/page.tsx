@@ -1,5 +1,5 @@
 "use client";
-import { fetchExpenses } from "@/app/lib/axios";
+import { debounce, fetchExpenses } from "@/app/lib/axios";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { easeInOut, motion } from "framer-motion";
@@ -52,19 +52,32 @@ const Page = () => {
       // console.log(userID);
       const fetchData = async () => {
         try {
-          const data = await fetchExpenses(userID);
-          // console.log("fetchedData", data.expenses);
-          setFetchedExp(data.expenses);
+          const catchedData = sessionStorage.getItem(`expenses-${userID}`);
+          // console.log(catchedData)
+          if (catchedData) {
+            setFetchedExp(JSON.parse(catchedData));
+          } else {
+            const data = await fetchExpenses(userID);
+            // console.log("fetchedData", data.expenses);
+            setFetchedExp(data.expenses);
+            sessionStorage.setItem(
+              `expenses-${userID}`,
+              JSON.stringify(data.expenses)
+            );
+          }
         } catch (error) {
           setError(`Error occurred while fetching the data: ${error}`);
         }
       };
-      fetchData();
+
+      const Debouncefunction = debounce(fetchData, 1000);
+
+      Debouncefunction();
     }
-  }, [refreshRequired]);
+  }, [refreshRequired, status, userID]);
 
   const searchedCategory = (data: string) => {
-    console.log("view all exp", data);
+    // console.log("view all exp", data);
     setSearchedData(data);
   };
   const handleSearchBarerror = (searchbar_error: string) => {
@@ -77,7 +90,7 @@ const Page = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsExpenseAdded(true);
-    console.log("form submitted", formData);
+    // console.log("form submitted", formData);
     const userID = session?.user._id ?? "";
     if (formData.category && formData.amount_spent && userID && formData._id) {
       try {
@@ -88,6 +101,22 @@ const Page = () => {
           amount_spent: formData.amount_spent,
           description: formData.description,
         });
+        const updatedData = fetchedExp.map((exp) =>
+          exp._id === formData._id
+            ? {
+                ...exp,
+                category: formData.category,
+                amount_spent: formData.amount_spent,
+                description: formData.description,
+              }
+            : exp
+        );
+        setFetchedExp(updatedData);
+        sessionStorage.setItem(
+          `expenses-${userID}`,
+          JSON.stringify(updatedData)
+        );
+        // console.log("result", result);
         setRenderMessage(result.message);
         setKey((prevkey) => prevkey + 1);
       } catch (error) {
@@ -111,6 +140,12 @@ const Page = () => {
     if (status == "authenticated" && userID && expenseID) {
       try {
         const result = await deleteExpense(userID, expenseID);
+        const updatedData = fetchedExp.filter((exp) => exp._id !== expenseID);
+        setFetchedExp(updatedData);
+        sessionStorage.setItem(
+          `expenses-${userID}`,
+          JSON.stringify(updatedData)
+        );
         setRenderMessage(result.message);
         setKey((prevkey) => prevkey + 1);
       } catch (error) {
@@ -124,7 +159,7 @@ const Page = () => {
 
   // Show loading or error message while waiting for session data or fetching expenses
   if (status === "loading") {
-    return <div>Loading session...</div>;
+    return <div className="text-xl text-center flex justify-center items-center"><p>Loading session...</p></div>;
   }
 
   if (error) {
@@ -141,14 +176,15 @@ const Page = () => {
         </h2>
 
         {/* Grid layout for expenses */}
-        <div className="grid grid-cols-1 gap-6">
+        <div className="relative grid grid-cols-1 gap-6">
           {fetchedExp.map((expense, index) => (
             <motion.div
-              initial={{ y: -50 }}
+              initial={{ y: -50, opacity: 0 }}
               animate={{
+                opacity: 1,
                 y: 0,
                 transition: {
-                  delay: 0.1 * index,
+                  delay: 0.2 * index,
                   ease: easeInOut,
                   duration: 0.5,
                 },
@@ -193,7 +229,7 @@ const Page = () => {
               </div>
             </motion.div>
           ))}
-          <span className=" flex justify-center mt-6 -mb-8 underline underline-offset-1 ">
+          <span className="flex justify-center text-center absolute -bottom-16 w-full underline underline-offset-1 ">
             <Link
               href={"newExp"}
               className=" font-semibold hover:text-blue-500"

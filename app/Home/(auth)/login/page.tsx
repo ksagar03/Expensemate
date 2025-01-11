@@ -27,8 +27,9 @@ const page = () => {
         password,
         // callbackUrl: "/Home"
       });
-      console.log(result);
+      // console.log(result);
       if (result?.error === null) {
+
         router.replace("/Home");
       } else if (result?.error === "Error: no user") {
         setError("no user found with this mail-ID");
@@ -38,7 +39,7 @@ const page = () => {
         console.log(error);
       }
     } catch (error) {
-      console.log("error");
+      console.error("error:", error);
     }
     setEmail("");
     setPassword("");

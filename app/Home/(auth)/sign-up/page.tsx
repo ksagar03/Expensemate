@@ -28,7 +28,7 @@ const page = () => {
   const createUser = async () => {
     try {
       const passwordHashed = await hash(password, 10);
-      console.log(passwordHashed);
+      // console.log(passwordHashed);
       const res = await axios.post("/api/user", {
         action: "create",
         name,
@@ -44,7 +44,7 @@ const page = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log({ name, email, password });
+    // console.log({ name, email, password });
     if (!name || !email || !password) {
       setError("Please provide all the fields.");
       return;

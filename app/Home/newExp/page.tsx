@@ -37,6 +37,7 @@ useEffect(()=>{
   }
 
 
+
   const { data: session, status } = useSession();
 
   // const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -58,6 +59,22 @@ useEffect(()=>{
           amount_spent: amountSpent,
           description: description,
         });
+
+        if(result.message == "Expense added successfully"){
+          
+        let UpdatedcatchedData = JSON.parse(sessionStorage.getItem(`expenses-${userID}`) || '{}' )
+
+        UpdatedcatchedData = [...UpdatedcatchedData , { userID: userID,
+          category: searchedData,
+          amount_spent: amountSpent,
+          description: description,
+          _id: result.LastExpID
+        }]
+          // console.log("upadted datat",UpdatedcatchedData)
+
+          sessionStorage.setItem(`expenses-${userID}`, JSON.stringify(UpdatedcatchedData))
+        }
+      
         setRenderMessage(result.message)
         setKey(prevKey => prevKey + 1)
         
