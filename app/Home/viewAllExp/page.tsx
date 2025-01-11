@@ -159,7 +159,11 @@ const Page = () => {
 
   // Show loading or error message while waiting for session data or fetching expenses
   if (status === "loading") {
-    return <div className="text-xl text-center flex justify-center items-center"><p>Loading session...</p></div>;
+    return (
+      <div className="text-xl text-center flex justify-center items-center">
+        <p>Loading session...</p>
+      </div>
+    );
   }
 
   if (error) {

@@ -40,7 +40,7 @@ const Home = () => {
               (expense: ExpenseDataDef) => expense.amount_spent
             );
             setFetchedExp(amount_spentData);
-            sessionStorage.setItem(`expenses-${userID}`, JSON.stringify(data));
+            sessionStorage.setItem(`expenses-${userID}`, JSON.stringify(data.expenses));
           }
           //  const calculatedTotalSum = amount_spentData.reduce((acc:number, currentValue:number) => acc + currentValue, 0)
           // console.log(calculatedTotalSum)
