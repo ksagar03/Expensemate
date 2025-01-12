@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
 import React from "react";
-import { addCategory, fetchCategories } from "../lib/axios";
+import { addCategory, debounce, fetchCategories } from "../lib/axios";
 import SearchIcon from "@mui/icons-material/Search";
 import CloseIcon from "@mui/icons-material/Close";
 
@@ -73,7 +73,10 @@ const CategoriesSearchBar = ({
           setError(`failed to load categories ${error}`);
         }
       };
-      loadCategories();
+      const debounceFunction  = debounce(loadCategories, 500)
+      debounceFunction()
+
+      // loadCategories();
       // console.log("fetched : ", categories);
     } else {
       setCategories([]);

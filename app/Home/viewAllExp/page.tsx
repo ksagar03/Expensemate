@@ -70,9 +70,10 @@ const Page = () => {
         }
       };
 
-      const Debouncefunction = debounce(fetchData, 1000);
+      // const Debouncefunction = debounce(fetchData, 1000);
 
-      Debouncefunction();
+      // Debouncefunction();
+      fetchData();
     }
   }, [refreshRequired, status, userID]);
 

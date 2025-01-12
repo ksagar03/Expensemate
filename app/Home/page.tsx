@@ -40,7 +40,10 @@ const Home = () => {
               (expense: ExpenseDataDef) => expense.amount_spent
             );
             setFetchedExp(amount_spentData);
-            sessionStorage.setItem(`expenses-${userID}`, JSON.stringify(data.expenses));
+            sessionStorage.setItem(
+              `expenses-${userID}`,
+              JSON.stringify(data.expenses)
+            );
           }
           //  const calculatedTotalSum = amount_spentData.reduce((acc:number, currentValue:number) => acc + currentValue, 0)
           // console.log(calculatedTotalSum)
@@ -48,8 +51,9 @@ const Home = () => {
           setError(`Error occurred while fetching the data: ${error}`);
         }
       };
-      const debounceFunction = debounce(fetchData, 1000);
-      debounceFunction();
+      // const debounceFunction = debounce(fetchData, 1000);
+      // debounceFunction();
+      fetchData();
     }
   }, [status, userID]);
 
