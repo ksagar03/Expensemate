@@ -151,7 +151,7 @@ const CategoriesSearchBar = ({
       />
       {newCategory && tosearch ? (
         <button
-          className={`flex absolute inset-0  md:left-[19rem] items-center justify-center text-light hover:text-yellowgreen rounded-full ${
+          className={`flex absolute inset-0 xs:left-[14rem] md:left-[19rem] items-center justify-center text-light hover:text-yellowgreen rounded-full ${
             categories.length
               ? ""
               : "transition-transform rotate-45 ease-in-out delay-600"

@@ -16,20 +16,21 @@ const Header = () => {
   // }
   const router = useRouter();
   const { data: session, status } = useSession();
-  const userName = session?.user.name
+  const userName = session?.user.name;
 
   return (
     <>
       <div className=" flex justify-between items-center text-center p-3 mx-3 md:mx-1 md:text-sm">
         <Link href={"/Home"}>
-       
-        <Image
-          className=" w-[50px] h-auto sm:w-[30px] md:w-[40px] rounded-2xl -mt-1 shadow-lg shadow-gray-500"
-          src={Logo}
-          alt="Logo image"
-        />
-         </Link>
-        {status === "loading" ? "" :  status !== "authenticated" ? (
+          <Image
+            className=" w-[50px] h-auto sm:w-[30px] md:w-[40px] rounded-2xl -mt-1 shadow-lg shadow-gray-500"
+            src={Logo}
+            alt="Logo image"
+          />
+        </Link>
+        {status === "loading" ? (
+          ""
+        ) : status !== "authenticated" ? (
           <span className="flex gap-4 mx-4 md:mx-0">
             <button
               className=" font-semibold border-2 p-2 rounded-lg px-4 border-rose-600 hover:bg-black hover:text-light md:px-2 md:p-1 "
@@ -55,7 +56,7 @@ const Header = () => {
                 whileTap={{ scale: 0.95 }}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ duration: 0.1 , ease: easeInOut }}
+                transition={{ duration: 0.1, ease: easeInOut }}
               >
                 {userName} ➜
               </motion.button>
@@ -78,6 +79,9 @@ const Header = () => {
                     onClick={() => {
                       signOut();
                       setDropDown(!dropDown);
+                      sessionStorage.removeItem(
+                        `expenses-${session?.user._id}`
+                      );
                     }}
                     className="mx-[58px] font-semibold border-2 py-2 rounded-lg px-4 border-rose-600 text-red-600 hover:bg-red-600 hover:text-light"
                   >
