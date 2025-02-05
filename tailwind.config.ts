@@ -21,6 +21,7 @@ const config: Config = {
       },
       animation: {
         gradient: "gradientAnimation 5s ease-in-out infinite",
+        slide: "slide 2s linear infinite"
       },
       backgroundSize: {
         "200": "200% 200%",
@@ -34,6 +35,14 @@ const config: Config = {
       
           "100%": { backgroundPosition: "0% 50%" },
         },
+        slide:{
+          from:{
+            "backgroundPosition": "0 0"
+          },
+          to:{
+            "backgroundPosition": "-200% 0"
+          }
+        }
       },
      
     },

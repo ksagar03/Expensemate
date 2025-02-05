@@ -6,10 +6,11 @@ import { Heading, Card } from "../Components/motion_components/motionTags";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import Link from "next/link";
 import NumberFlow from "@number-flow/react";
-import { useSession } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { debounce, fetchExpenses } from "../lib/axios";
 import { useState, useEffect } from "react";
 import { ExpenseDataDef } from "./viewAllExp/page";
+import { Result } from "postcss";
 const Graph = React.lazy(() => import("../Components/Graph"));
 
 const Home = () => {
@@ -77,7 +78,18 @@ const Home = () => {
       // setCurrentVal(totalExpenses);
     }
   }, [fetchedExp]);
-
+  const handleClick = async () => {
+    try {
+      const result = await signIn("credentials", {
+        redirect: false,
+        email: "test123@gmail.com",
+        password: "Test@1234",
+      });
+      if (result?.error === null) console.log("Test Login sucessful");
+    } catch(err) {
+      setError(`error occured while Test login:${err}` )
+    }
+  };
   return (
     <>
       {status === "authenticated" ? (
@@ -143,12 +155,23 @@ const Home = () => {
           {status === "loading" ? (
             <p> Loading please wait...</p>
           ) : (
-            <p className="">
-              {" "}
-              Uh-oh, you’re not logged in! We can’t show your expenses until you
-              make it official. Hurry up before they vanish like that last slice
-              of pizza!😏😏😏
-            </p>
+            <div className="flex-col">
+              <button
+                onClick={handleClick}
+                className=" animate-slide mb-10 sm:mb-5 text-yellowgreen rounded-2xl border-2 border-yellow-400 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] py-4 px-6 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-50 hover:shadow-lg relative group "
+              >
+                Try Demo
+                <span className=" text-light arrow ml-2 inline-block transform transition-transform duration-300 group-hover:translate-x-2 group-hover:rotate-45">
+                  →
+                </span>
+              </button>
+              <p>
+                {" "}
+                Uh-oh, you’re not logged in! We can’t show your expenses until
+                you make it official. Hurry up before they vanish like that last
+                slice of pizza!😏😏😏
+              </p>
+            </div>
           )}
         </span>
       )}
@@ -157,3 +180,10 @@ const Home = () => {
 };
 
 export default Home;
+
+{
+  /* <button className="animate-slide mb-10 sm:mb-5 text-light rounded-lg border-2 border-yellow-400 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] p-4 px-6 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-50 hover:shadow-lg hover:shadow-current relative group">
+  Try Demo
+ 
+</button> */
+}

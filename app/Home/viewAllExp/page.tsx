@@ -99,7 +99,7 @@ const Page = () => {
           userID: userID,
           expenseID: formData._id,
           category: formData.category,
-          amount_spent: formData.amount_spent,
+          amount_spent: Number(formData.amount_spent),
           description: formData.description,
         });
         const updatedData = fetchedExp.map((exp) =>
@@ -107,7 +107,7 @@ const Page = () => {
             ? {
                 ...exp,
                 category: formData.category,
-                amount_spent: formData.amount_spent,
+                amount_spent: Number(formData.amount_spent),
                 description: formData.description,
               }
             : exp
