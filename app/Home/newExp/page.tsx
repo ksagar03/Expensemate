@@ -1,6 +1,6 @@
 "use client";
-import React, { useEffect, useState} from "react";
-import {addExpenses } from "@/app/lib/axios";
+import React, { useEffect, useState } from "react";
+import { addExpenses } from "@/app/lib/axios";
 import { Heading } from "@/app/Components/motion_components/motionTags";
 import { motion } from "framer-motion";
 import { useSession } from "next-auth/react";
@@ -13,30 +13,26 @@ const page = () => {
   const [error, setError] = useState<string | null>(null);
   const [amountSpent, setAmountSpent] = useState<number>();
   const [description, setDescription] = useState("");
-  const [isExpenseAdded, setIsExpenseAdded] = useState(false)
-   const [renderMessage , setRenderMessage] = useState("")
-   const [key, setKey] = useState(0)
- 
+  const [isExpenseAdded, setIsExpenseAdded] = useState(false);
+  const [renderMessage, setRenderMessage] = useState("");
+  const [key, setKey] = useState(0);
 
-useEffect(()=>{
-  if(isExpenseAdded){
-    setIsExpenseAdded(false)
-  }
-}, [isExpenseAdded])
+  useEffect(() => {
+    if (isExpenseAdded) {
+      setIsExpenseAdded(false);
+    }
+  }, [isExpenseAdded]);
 
-
-  const searchedCategory =  (data: string) => {
+  const searchedCategory = (data: string) => {
     setSearchedData(data);
   };
 
   const handleSearchBarerror = (searchbar_error: string) => {
-    if(searchbar_error){
+    if (searchbar_error) {
       // console.log("search bar error message: ", searchbar_error);
-      setError(searchbar_error)
+      setError(searchbar_error);
     }
-  }
-
-
+  };
 
   const { data: session, status } = useSession();
 
@@ -52,7 +48,7 @@ useEffect(()=>{
   const handleOnclick = async () => {
     const userID = session?.user._id ?? "";
     if (userID && searchedData && amountSpent) {
-      try{
+      try {
         const result = await addExpenses({
           userID: userID,
           category: searchedData,
@@ -60,38 +56,32 @@ useEffect(()=>{
           description: description,
         });
 
-        if(result.message == "Expense added successfully"){
-          
-        let UpdatedcatchedData = JSON.parse(sessionStorage.getItem(`expenses-${userID}`) || '{}' )
-
-        UpdatedcatchedData = [...UpdatedcatchedData , { userID: userID,
-          category: searchedData,
-          amount_spent: amountSpent,
-          description: description,
-          _id: result.LastExpID
-        }]
+        if (result.message == "Expense added successfully") {
+          // let UpdatedcatchedData = JSON.parse(sessionStorage.getItem(`expenses-${userID}`) || '{}' )
+          // UpdatedcatchedData = [...UpdatedcatchedData , { userID: userID,
+          //   category: searchedData,
+          //   amount_spent: amountSpent,
+          //   description: description,
+          //   _id: result.
+          // }]
           // console.log("upadted datat",UpdatedcatchedData)
-
-          sessionStorage.setItem(`expenses-${userID}`, JSON.stringify(UpdatedcatchedData))
+          // sessionStorage.setItem(`expenses-${userID}`, JSON.stringify(UpdatedcatchedData))
         }
-      
-        setRenderMessage(result.message)
-        setKey(prevKey => prevKey + 1)
-        
-      }catch(error){
-        setError(`unable to add the expenses ${error}`)
+
+        setRenderMessage(result.message);
+        setKey((prevKey) => prevKey + 1);
+      } catch (error) {
+        setError(`unable to add the expenses ${error}`);
       }
-     
     } else {
       setError("Please enter all the fileds");
     }
-    setIsExpenseAdded(true)
+    setIsExpenseAdded(true);
     setAmountSpent(0);
-    setSearchedData("")
+    setSearchedData("");
     setDescription("");
     setError("");
   };
-
 
   return (
     <div className=" flex flex-col justify-center min-h-screen  m-12 gap-3">
@@ -109,7 +99,11 @@ useEffect(()=>{
             transition: { duration: 0.3, ease: "easeInOut" },
           }}
         >
-          <CategoriesSearchBar currentCategory={searchedCategory} searchBarErrrmsg={handleSearchBarerror} isExpenseAdded={isExpenseAdded} />
+          <CategoriesSearchBar
+            currentCategory={searchedCategory}
+            searchBarErrrmsg={handleSearchBarerror}
+            isExpenseAdded={isExpenseAdded}
+          />
           <label
             htmlFor="Amount"
             className=" text-[#deb887] absolute z-10 text-xl px-4 p-3 font-semibold  "
@@ -168,5 +162,4 @@ useEffect(()=>{
   );
 };
 
-export default page
-
+export default page;

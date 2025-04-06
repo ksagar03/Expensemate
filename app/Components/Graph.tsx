@@ -73,6 +73,13 @@ const Graph = React.memo(({ data }: Graphprops) => {
         >
           <ResponsiveContainer width="100%" height={400}>
             <AreaChart width={400} height={400} data={updatedData}>
+              <defs>
+                <linearGradient id="customGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#00C6FB" /> {/* Blue */}
+                  <stop offset="50%" stopColor="#8338EC" /> {/* Purple */}
+                  <stop offset="100%" stopColor="#FF4B2B" /> {/* Orange-Pink */}
+                </linearGradient>
+              </defs>
               <XAxis dataKey="monthYear" />
               <YAxis />
               <CartesianGrid strokeDasharray="3 3" />
@@ -94,7 +101,13 @@ const Graph = React.memo(({ data }: Graphprops) => {
                 }}
               />
               <Legend />
-              <Area type="monotone" dataKey="amount_spent" />
+              <Area
+                type="monotone"
+                dataKey="amount_spent"
+                stroke="#FFFFFF"
+                strokeWidth={2}
+                fill="url(#customGradient)"
+              />
             </AreaChart>
           </ResponsiveContainer>
         </motion.div>

@@ -21,3 +21,5 @@ const openDb = async (): Promise<Database> => {
 
 }
 export default openDb
+
+// This db.ts can not be used as the data stored in the sqlite will stored in the local storage or memory which can't be used to store the data in the cloud

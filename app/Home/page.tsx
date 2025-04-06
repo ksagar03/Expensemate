@@ -10,7 +10,6 @@ import { signIn, useSession } from "next-auth/react";
 import { debounce, fetchExpenses } from "../lib/axios";
 import { useState, useEffect } from "react";
 import { ExpenseDataDef } from "./viewAllExp/page";
-import { Result } from "postcss";
 const Graph = React.lazy(() => import("../Components/Graph"));
 
 const Home = () => {
@@ -24,28 +23,39 @@ const Home = () => {
     if (status === "authenticated") {
       const fetchData = async () => {
         try {
-          let catchedData = sessionStorage.getItem(`expenses-${userID}`);
 
-          if (catchedData) {
-            let data = JSON.parse(catchedData);
-            setFetchedData(data);
-            const amount_spentData = data.map(
-              (expense: ExpenseDataDef) => expense.amount_spent
-            );
-            setFetchedExp(amount_spentData);
-          } else {
-            const data = await fetchExpenses(userID);
+          const data = await fetchExpenses(userID);
             // console.log("fetchedData", data.expenses);
             setFetchedData(data.expenses);
             const amount_spentData = data.expenses.map(
               (expense: ExpenseDataDef) => expense.amount_spent
             );
             setFetchedExp(amount_spentData);
-            sessionStorage.setItem(
-              `expenses-${userID}`,
-              JSON.stringify(data.expenses)
-            );
-          }
+
+
+            
+          // let catchedData = sessionStorage.getItem(`expenses-${userID}`);
+
+          // if (catchedData) {
+          //   let data = JSON.parse(catchedData);
+          //   setFetchedData(data);
+          //   const amount_spentData = data.map(
+          //     (expense: ExpenseDataDef) => expense.amount_spent
+          //   );
+          //   setFetchedExp(amount_spentData);
+          // } else {
+          //   const data = await fetchExpenses(userID);
+          //   // console.log("fetchedData", data.expenses);
+          //   setFetchedData(data.expenses);
+          //   const amount_spentData = data.expenses.map(
+          //     (expense: ExpenseDataDef) => expense.amount_spent
+          //   );
+          //   setFetchedExp(amount_spentData);
+          //   sessionStorage.setItem(
+          //     `expenses-${userID}`,
+          //     JSON.stringify(data.expenses) // if the data is stored retived for the first time then the data will be stored for the first time
+          //   );
+          // }
           //  const calculatedTotalSum = amount_spentData.reduce((acc:number, currentValue:number) => acc + currentValue, 0)
           // console.log(calculatedTotalSum)
         } catch (error) {

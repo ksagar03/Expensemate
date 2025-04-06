@@ -52,19 +52,23 @@ const Page = () => {
       // console.log(userID);
       const fetchData = async () => {
         try {
-          const catchedData = sessionStorage.getItem(`expenses-${userID}`);
-          // console.log(catchedData)
-          if (catchedData) {
-            setFetchedExp(JSON.parse(catchedData));
-          } else {
-            const data = await fetchExpenses(userID);
-            // console.log("fetchedData", data.expenses);
-            setFetchedExp(data.expenses);
-            sessionStorage.setItem(
-              `expenses-${userID}`,
-              JSON.stringify(data.expenses)
-            );
-          }
+          const data = await fetchExpenses(userID);
+          // console.log("fetchedData", data.expenses);
+          setFetchedExp(data.expenses);
+
+          // const catchedData = sessionStorage.getItem(`expenses-${userID}`);
+          // // console.log(catchedData)
+          // if (catchedData) {
+          //   setFetchedExp(JSON.parse(catchedData));
+          // } else {
+          //   const data = await fetchExpenses(userID);
+          //   // console.log("fetchedData", data.expenses);
+          //   setFetchedExp(data.expenses);
+          //   sessionStorage.setItem(
+          //     `expenses-${userID}`,
+          //     JSON.stringify(data.expenses)
+          //   );
+          // }
         } catch (error) {
           setError(`Error occurred while fetching the data: ${error}`);
         }
@@ -113,10 +117,10 @@ const Page = () => {
             : exp
         );
         setFetchedExp(updatedData);
-        sessionStorage.setItem(
-          `expenses-${userID}`,
-          JSON.stringify(updatedData)
-        );
+        // sessionStorage.setItem(
+        //   `expenses-${userID}`,
+        //   JSON.stringify(updatedData)
+        // );
         // console.log("result", result);
         setRenderMessage(result.message);
         setKey((prevkey) => prevkey + 1);
@@ -143,10 +147,10 @@ const Page = () => {
         const result = await deleteExpense(userID, expenseID);
         const updatedData = fetchedExp.filter((exp) => exp._id !== expenseID);
         setFetchedExp(updatedData);
-        sessionStorage.setItem(
-          `expenses-${userID}`,
-          JSON.stringify(updatedData)
-        );
+        // sessionStorage.setItem(
+        //   `expenses-${userID}`,
+        //   JSON.stringify(updatedData)
+        // );
         setRenderMessage(result.message);
         setKey((prevkey) => prevkey + 1);
       } catch (error) {

@@ -7,9 +7,9 @@ import { useRouter } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
 import { easeInOut, motion } from "framer-motion";
 import Link from "next/link";
+import { invalidateAllExpense } from "../lib/redisconf";
 
 const Header = () => {
-  const [loginorSignin, setLoginOrSignin] = useState("");
   const [dropDown, setDropDown] = useState(false);
   // const handleLogin_signup = () => {
   //   setLoginOrSignin("")
@@ -17,6 +17,16 @@ const Header = () => {
   const router = useRouter();
   const { data: session, status } = useSession();
   const userName = session?.user.name;
+  const userID = session?.user._id
+  const handleSignout = async () => {
+    if(userID){
+      signOut();
+      setDropDown(!dropDown);
+      await invalidateAllExpense(userID)
+    }
+   
+
+  }
 
   return (
     <>
@@ -76,13 +86,7 @@ const Header = () => {
                   }}
                 >
                   <button
-                    onClick={() => {
-                      signOut();
-                      setDropDown(!dropDown);
-                      sessionStorage.removeItem(
-                        `expenses-${session?.user._id}`
-                      );
-                    }}
+                    onClick={handleSignout}
                     className="mx-[58px] font-semibold border-2 py-2 rounded-lg px-4 border-rose-600 text-red-600 hover:bg-red-600 hover:text-light"
                   >
                     {" "}
