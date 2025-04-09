@@ -3,13 +3,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "../../lib/dbConnect";
 import User, { Expense, User_interface } from "../../models/userModel";
-import {
+import redisClient, {
   setCachedExpense,
   getCachedExpense,
-  invalidateAllExpense,
-  invalidateExpense,
+  invalidateData,
 } from "@/app/lib/redisconf";
 import { ExpenseDataDef } from "@/app/Home/viewAllExp/page";
+import { updateExpenses } from "@/app/lib/axios";
 
 // import lruCache from "@/app/lib/lruCache";
 
@@ -40,6 +40,8 @@ export async function POST(req: NextRequest) {
     const LastExpID =
       user.user_expenses[user.user_expenses.length - 1]._id.toString();
 
+    // Lru cache
+
     // let cachedExp = lruCache.get(`expenses:${userID}`) || [];
 
     // cachedExp = [
@@ -56,13 +58,46 @@ export async function POST(req: NextRequest) {
     // lruCache.set(`expenses:${userID}`, cachedExp);
 
     // redis post method
-    await setCachedExpense(userID, LastExpID, {
-      category,
-      amount_spent,
-      description,
-      timestamp: Date.now(),
-    });
+    // method 1
+    // await setCachedExpense(userID, LastExpID, {
+    //   category,
+    //   amount_spent,
+    //   description,
+    //   timestamp: Date.now(),
+    // });
     // console.log("last exp: ",LastExpID)
+
+    //  redis post method
+    // method 2
+    try {
+      let cached = await getCachedExpense(userID);
+      let updatedExpenses: ExpenseDataDef[] = [];
+      if (cached && Array.isArray(cached)) {
+        updatedExpenses = [
+          ...cached,
+          {
+            category,
+            amount_spent,
+            description,
+            timestamp: Date.now(),
+            _id: LastExpID,
+          },
+        ];
+      } else {
+        updatedExpenses = [
+          {
+            category,
+            amount_spent,
+            description,
+            timestamp: Date.now(),
+            _id: LastExpID,
+          },
+        ];
+      }
+      await setCachedExpense(userID, updatedExpenses);
+    } catch (error) {
+      console.error("Redis add new expense error", error);
+    }
 
     return NextResponse.json(
       { message: "Expense added successfully" },
@@ -87,30 +122,38 @@ export async function GET(req: NextRequest) {
   //   return NextResponse.json({ expenses: cachedExp });
   // }
   try {
-    // redis get
+    // redis get method 1
     const cachedExp = await getCachedExpense(userID);
     if (cachedExp) {
       console.log("returning from cached data");
       return NextResponse.json({ expenses: cachedExp });
     }
+
     await dbConnect();
     const user = await User.findById(userID);
     if (!user) {
       return NextResponse.json({ message: "User not found" }, { status: 404 });
     }
-    // redis set
-    await Promise.all(
-      user.user_expenses.map((exp: ExpenseDataDef) => {
-        setCachedExpense(userID, exp._id.toString(), exp);
-      })
-    );
-    console.log("data fetchedd from DB and cached to redis");
+    // redis set method 1
+    // await Promise.all(
+    //   user.user_expenses.map((exp: ExpenseDataDef) => {
+    //     setCachedExpense(userID, exp._id.toString(), exp);
+    //   })
+    // );
+    // console.log("data fetchedd from DB and cached to redis");
+
+    //  redis method 2
+    try {
+      await setCachedExpense(userID, user.user_expenses);
+    } catch (error) {
+      console.error("error while pushing data to redis", error);
+    }
     //----- lru set
     // lruCache.set(`expenses:${userID}`, user.user_expenses);
 
     return NextResponse.json({ expenses: user.user_expenses });
   } catch (error) {
-   return NextResponse.json(
+    return NextResponse.json(
       { message: `Failed to Fetch the expenses: ${error}` },
       { status: 500 }
     );
@@ -148,8 +191,21 @@ export async function PUT(req: NextRequest) {
 
     await user.save();
 
-    //  redis PUT
-    await setCachedExpense(userID, expenseID, expense);
+    //  redis PUT method 1
+    // await setCachedExpense(userID, expenseID, expense);
+
+    //  redis method 2
+    try {
+      let cached = await getCachedExpense(userID);
+      if (!cached) return;
+      const cachedExp = cached as ExpenseDataDef[]
+      const updatedExpenses = cachedExp.map((exp: ExpenseDataDef) =>
+        exp._id === expense._id.toString() ? expense : exp
+      );
+      await setCachedExpense(userID, updatedExpenses);
+    } catch (error) {
+      console.error("failed to edit data in redis", error);
+    }
 
     //  lru put
     // let cachedExp = lruCache.get(`expenses:${userID}`) || [];
@@ -192,7 +248,7 @@ export async function DELETE(req: NextRequest) {
     await user.save();
 
     //  Redis delete
-    await invalidateExpense(userID, expenseID);
+    await invalidateData(userID);
     // let cachedExp = lruCache.get(`expenses:${userID}`) || [];
     // cachedExp = cachedExp.filter((exp) => exp._id !== expenseID);
     // lruCache.set(`expense:${userID}`, cachedExp);
@@ -202,7 +258,7 @@ export async function DELETE(req: NextRequest) {
       { status: 201 }
     );
   } catch (error) {
-   return NextResponse.json(
+    return NextResponse.json(
       { message: `failed to delete expense: ${error}` },
       { status: 500 }
     );

@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
 import { easeInOut, motion } from "framer-motion";
 import Link from "next/link";
-import { invalidateAllExpense } from "../lib/redisconf";
+import { invalidateData } from "../lib/redisconf";
 
 const Header = () => {
   const [dropDown, setDropDown] = useState(false);
@@ -22,7 +22,8 @@ const Header = () => {
     if(userID){
       signOut();
       setDropDown(!dropDown);
-      await invalidateAllExpense(userID)
+      await invalidateData(userID)
+
     }
    
 
