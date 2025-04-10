@@ -11,7 +11,6 @@ import { updateExpenses, deleteExpense } from "@/app/lib/axios";
 import CategoriesSearchBar from "@/app/Components/CategoriesSearchBar";
 import Link from "next/link";
 import PopupNotification from "@/app/Components/PopupNotification";
-import { ObjectId } from "mongoose";
 
 export interface ExpenseDataDef extends Expense {
   _id: string;
@@ -25,11 +24,11 @@ const Page = () => {
   const { data: session, status } = useSession();
   const userID = session?.user._id ?? "";
   const [refreshRequired, SetRefreshRequired] = useState(false);
-  const [formData, setFromData] = useState({
+  const [formData, setFromData] = useState<ExpenseDataDef>({
     category: "",
     amount_spent: 0,
     description: "",
-    _id: "",
+    _id: "" ,
   });
   const [isExpenseAdded, setIsExpenseAdded] = useState(false);
 
@@ -146,7 +145,7 @@ const Page = () => {
     if (status == "authenticated" && userID && expenseID) {
       try {
         const result = await deleteExpense(userID, expenseID);
-        const updatedData = fetchedExp.filter((exp) => exp._id !== expenseID);
+        const updatedData = fetchedExp.filter((exp) => exp._id?.toString() !== expenseID);
         setFetchedExp(updatedData);
         // sessionStorage.setItem(
         //   `expenses-${userID}`,
@@ -200,7 +199,7 @@ const Page = () => {
                 },
               }}
               exit={{ opacity: 0, y: 50 }}
-              key={expense._id}
+              key={expense._id?.toString()}
               className="bg-white p-5  relative rounded-lg shadow-lg border border-gray-200 hover:shadow-xl transition-shadow duration-300 ease-in-out"
             >
               <span className="absolute flex right-[1rem] gap-2 ">
@@ -219,7 +218,7 @@ const Page = () => {
                 >
                   <DriveFileRenameOutlineIcon className="cursor-pointer hover:text-blue-600" />
                 </span>
-                <span onClick={() => handleDelete(expense._id)}>
+                <span onClick={() => handleDelete(expense._id?.toString() || "")}>
                   <DeleteOutlineIcon className=" cursor-pointer hover:text-red-600 " />
                 </span>
               </span>

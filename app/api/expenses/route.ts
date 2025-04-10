@@ -9,7 +9,6 @@ import redisClient, {
   invalidateData,
 } from "@/app/lib/redisconf";
 import { ExpenseDataDef } from "@/app/Home/viewAllExp/page";
-import { updateExpenses } from "@/app/lib/axios";
 
 // import lruCache from "@/app/lib/lruCache";
 
@@ -199,8 +198,22 @@ export async function PUT(req: NextRequest) {
       let cached = await getCachedExpense(userID);
       if (!cached) return;
       const cachedExp = cached as ExpenseDataDef[]
-      const updatedExpenses = cachedExp.map((exp: ExpenseDataDef) =>
-        exp._id === expense._id.toString() ? expense : exp
+      const updatedExpenses = cachedExp.map((exp: ExpenseDataDef) =>{
+        if (exp._id && expense._id && exp._id.toString() === expense._id.toString()) {
+          const updatedExpense: ExpenseDataDef ={
+            category: expense.category,
+            amount_spent: expense.amount_spent,
+            description:expense.description,
+            timestamp: expense.timestamp,
+            _id: expense._id.toString(),
+          };
+          return updatedExpense
+        } else {
+          return exp;
+        }
+
+      }
+        
       );
       await setCachedExpense(userID, updatedExpenses);
     } catch (error) {
