@@ -8,8 +8,8 @@ import { ExpenseDataDef } from "../Home/viewAllExp/page";
 const redisClient = new Redis({
   url: process.env.NEXT_UPSTASH_REDIS_REST_URL,
   token: process.env.NEXT_UPSTASH_REDIS_REST_TOKEN,
-  // url: "https://frank-sponge-15904.upstash.io",
-  // token: "AT4gAAIjcDEyODA3MzNhMWJhNzM0ODkxODlmMDA3MzNlY2FiMTk5ZXAxMA",
+  // url: "https://content-jackass-27588.upstash.io",
+  // token: "AWvEAAIjcDE5ODBlZjU0YzE1YWQ0OWU2YWMyNGZiZTdlNmUzMzI2MnAxMA",
 });
 
 // Get request
@@ -49,7 +49,7 @@ const redisClient = new Redis({
 
 export async function getCachedExpense(userID: string) {
   try {
-    const data = (await redisClient.get(`${userID}`)) ;
+    const data = await redisClient.get(`${userID}`);
     if (!data) return null;
     // console.log("get: ", typeof data)
     // console.log("get data: ",  data)
@@ -60,14 +60,11 @@ export async function getCachedExpense(userID: string) {
   }
 }
 
-export async function setCachedExpense(
-  userID: string,
-  data:  ExpenseDataDef[]
-) {
+export async function setCachedExpense(userID: string, data: ExpenseDataDef[]) {
   try {
     // console.log("recived data::", data)
     // console.log("recived data type::", typeof data)
-      await redisClient.set(`${userID}`,JSON.stringify(data), { ex: 900 });
+    await redisClient.set(`${userID}`, JSON.stringify(data), { ex: 900 });
   } catch (error) {
     console.error("redis set error", error);
     return null;

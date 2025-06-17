@@ -110,8 +110,7 @@ const Home = () => {
               className="mt-12 p-6 mb-8"
             />
             <Card
-              className=" block max-w-[28rem] ml-10 h-28 mb-14 text-center items-center p-6 bg-gradient-to-r from-yellow-400 to-violet-500 border-2 border-dark rounded-xl 
-  sm:max-w-full sm:h-auto sm:p-4 sm:m-5 sm:text-center bg-[length:200%_200%] animate-gradient shadow-lg shadow-gray-600"
+              className=" block max-w-[28rem] ml-10 h-28 mb-14 text-center items-center py-1 bg-gradient-to-r from-yellow-400 to-violet-500 border-2 border-dark rounded-xl sm:max-w-full sm:h-auto sm:p-4 sm:m-5 sm:text-center bg-[length:200%_200%] animate-gradient shadow-lg shadow-gray-600"
             >
               <div>
                 {/* <h1 className=" text-xl font-medium">
@@ -119,7 +118,7 @@ const Home = () => {
           </h1> */}
                 <NumberFlow
                   key={currentVal}
-                  className=" font-bold text-2xl"
+                  className=" font-bold text-3xl"
                   value={currentVal}
                   format={{
                     style: "currency",
@@ -144,14 +143,14 @@ const Home = () => {
           <Graph data={fetchedData}/>
           </React.Suspense> */}
 
-            <div className="flex flex-wrap justify-evenly gap-6 border-2 shadow-xl shadow-slate-300 ml-6 p-10 rounded-xl m-10 md:flex-col">
+            <div className="flex flex-wrap justify-evenly gap-6 border-2 shadow-xl shadow-slate-300 m-10 ml-6 p-10 rounded-xl md:flex-col">
               <Link href={"/Home/newExp"}>
-                <Card className="text-lg sm:text-base font-medium min-w-[26rem] items-center sm:min-w-[15rem] md:min-w-[24rem] min-h-28 h-auto bg-gradient-to-r p-6 from-yellow-400 to-violet-500 border-2 border-dark rounded-xl hover:bg-[length:200%_200%] hover:animate-gradient hover:shadow-current hover:shadow-md shadow-lg shadow-gray-600 ">
+                <Card className="text-xl md:text-sm font-semibold min-w-[25rem] items-center sm:min-w-[15rem] md:min-w-[24rem] min-h-24 h-auto bg-gradient-to-r p-4 from-yellow-400 to-violet-500 border-2  bg-[length:200%_200%] animate-gradient shadow-lg shadow-gray-600 border-dark">
                   Add New expenses <AddCircleOutlineIcon />
                 </Card>
               </Link>
               <Link href={"/Home/viewAllExp"}>
-                <Card className="text-lg sm:text-base font-medium min-w-[26rem] items-center sm:min-w-[15rem] md:min-w-[24rem] min-h-28 h-auto bg-gradient-to-r p-6 from-yellow-400 to-violet-500 border-2 border-dark rounded-xl hover:bg-[length:200%_200%] hover:animate-gradient hover:shadow-current hover:shadow-md shadow-lg shadow-gray-600">
+                <Card className="text-xl md:text-sm font-semibold min-w-[25rem] items-center sm:min-w-[15rem] md:min-w-[24rem] min-h-24 h-auto bg-gradient-to-r p-4 from-yellow-400 to-violet-500 border-2 bg-[length:200%_200%] animate-gradient shadow-lg shadow-gray-600 border-dark">
                   View your expense
                 </Card>
               </Link>

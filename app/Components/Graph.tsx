@@ -22,7 +22,7 @@ interface Graphprops {
 const Graph = React.memo(({ data }: Graphprops) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [isDataEmpty, setIsDataEmpty] = useState<boolean>(false);
-
+  
   useEffect(() => {
     const timer = setTimeout(() => setLoading(false), 1500);
     return () => clearTimeout(timer);
@@ -40,6 +40,8 @@ const Graph = React.memo(({ data }: Graphprops) => {
       monthYear: e.timestamp ? format(new Date(e.timestamp), "MMM yyy") : "",
     };
   });
+  // console.log("updated ----- ",typeof updatedData);
+  
 
   return (
     <div className="m-10 ml-6 border-2 rounded-xl shadow-slate-300 shadow-xl">
